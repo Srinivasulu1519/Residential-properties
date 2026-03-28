@@ -1,0 +1,264 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ───────────────────────────────────────────────────
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+enum PropertyType {
+  PLOT
+  APARTMENT
+  VILLA
+  FARMHOUSE
+  AGRICULTURE_LAND
+  RENT
+  COMMERCIAL
+  INDEPENDENT_HOUSE
+}
+
+enum PropertyStatus {
+  AVAILABLE
+  SOLD
+  UPCOMING
+  EXPIRED
+}
+
+enum ListingPurpose {
+  SALE
+  RENT
+  PG
+}
+
+enum FurnishingStatus {
+  UNFURNISHED
+  SEMI_FURNISHED
+  FULLY_FURNISHED
+}
+
+enum ConstructionStatus {
+  READY_TO_MOVE
+  UNDER_CONSTRUCTION
+  NEW_LAUNCH
+}
+
+enum Facing {
+  NORTH
+  SOUTH
+  EAST
+  WEST
+  NORTH_EAST
+  NORTH_WEST
+  SOUTH_EAST
+  SOUTH_WEST
+}
+
+enum TenantType {
+  FAMILY
+  BACHELORS
+  ANY
+}
+
+enum NotificationType {
+  REGISTRATION
+  LOGIN
+  NEW_PROPERTY
+  PRICE_DROP
+  PROPERTY_EXPIRY
+  CONTACT_VIEWED
+  SYSTEM
+  LEAD
+}
+
+enum NotificationChannel {
+  EMAIL
+  SMS
+  PUSH
+  IN_APP
+}
+
+// ─── User ────────────────────────────────────────────────────
+
+model User {
+  id                 String                   @id @default(uuid())
+  name               String
+  email              String                   @unique
+  password           String
+  role               UserRole                 @default(USER)
+  phone              String?
+  searchHistory      String[]                 @default([]) @map("search_history")
+  savedProperties    Property[]               @relation("SavedProperties")
+  postedProperties   Property[]               @relation("PostedBy")
+  activities         Activity[]
+  notifications      Notification[]
+  contactViews       ContactView[]
+  leads              Lead[]
+  preferences        NotificationPreference?
+  contactViewsUsed   Int                      @default(0) @map("contact_views_used")
+  contactViewsLimit  Int                      @default(7) @map("contact_views_limit")
+  trialEndsAt        DateTime?                @map("trial_ends_at")
+  subscriptionActive Boolean                  @default(false) @map("subscription_active")
+  resetToken         String?                  @map("reset_token")
+  resetTokenExpiry   DateTime?                @map("reset_token_expiry")
+  createdAt          DateTime                 @default(now()) @map("created_at")
+
+  @@map("users")
+}
+
+// ─── Property ────────────────────────────────────────────────
+
+model Property {
+  id                String             @id @default(uuid())
+  title             String
+  type              PropertyType
+  price             Float
+  priceUnit         String             @default("total") @map("price_unit")
+  fullAddress       String             @map("full_address")
+  location          String?            @map("location")
+  city              String
+  area              Float
+  areaUnit          String             @default("sq ft") @map("area_unit")
+  bedrooms          Int?
+  bathrooms         Int?
+  description       String
+  features          String[]
+  images            String[]
+  brochureUrl       String?            @map("brochure_url")
+  metadata          Json?              @default("{}")
+  status            PropertyStatus     @default(AVAILABLE)
+
+  // ── Listing & Classification ──
+  listingPurpose    ListingPurpose?    @map("listing_purpose")
+  isVerified        Boolean            @default(false) @map("is_verified")
+  isActive          Boolean            @default(true)  @map("is_active")
+  viewCount         Int                @default(0) @map("view_count")
+  expiresAt         DateTime?          @map("expires_at")
+
+  // ── Apartment / Villa / House / Rent ──
+  furnishing        FurnishingStatus?
+  constructionStatus ConstructionStatus? @map("construction_status")
+  propertyAge       String?            @map("property_age")
+  floor             Int?
+  totalFloors       Int?               @map("total_floors")
+  balconies         Int?
+  parking           Int?
+  facing            Facing?
+
+  // ── Plot / Agriculture Land ──
+  plotDimensions    String?            @map("plot_dimensions")
+  soilType          String?            @map("soil_type")
+  roadWidth         String?            @map("road_width")
+  gatedCommunity    Boolean            @default(false) @map("gated_community")
+  waterSource       Boolean            @default(false) @map("water_source")
+  electricityStatus Boolean            @default(false) @map("electricity_status")
+
+  // ── Rental Owner Contact (hidden behind paywall) ──
+  ownerName         String?            @map("owner_name")
+  ownerPhone        String?            @map("owner_phone")
+  ownerEmail        String?            @map("owner_email")
+
+  // ── Rental-Specific Pricing ──
+  monthlyRent       Float?             @map("monthly_rent")
+  securityDeposit   Float?             @map("security_deposit")
+  maintenanceCharge Float?             @map("maintenance_charge")
+  tenantType        TenantType?        @map("tenant_type")
+
+  // ── Relations ──
+  savedBy           User[]             @relation("SavedProperties")
+  postedById        String?            @map("posted_by_id")
+  postedBy          User?              @relation("PostedBy", fields: [postedById], references: [id])
+  contactViews      ContactView[]
+  leads             Lead[]
+  notifications     Notification[]
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
+
+  @@map("properties")
+}
+
+// ─── Activity ────────────────────────────────────────────────
+
+model Activity {
+  id        String   @id @default(uuid())
+  type      String
+  title     String
+  date      DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("activities")
+}
+
+// ─── Notification ────────────────────────────────────────────
+
+model Notification {
+  id         String              @id @default(uuid())
+  userId     String              @map("user_id")
+  user       User                @relation(fields: [userId], references: [id])
+  type       NotificationType
+  channel    NotificationChannel @default(IN_APP)
+  title      String
+  body       String
+  isRead     Boolean             @default(false) @map("is_read")
+  propertyId String?             @map("property_id")
+  property   Property?           @relation(fields: [propertyId], references: [id])
+  createdAt  DateTime            @default(now()) @map("created_at")
+
+  @@index([userId, isRead])
+  @@map("notifications")
+}
+
+// ─── Contact View (Rental Paywall Tracking) ──────────────────
+
+model ContactView {
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  user       User     @relation(fields: [userId], references: [id])
+  propertyId String   @map("property_id")
+  property   Property @relation(fields: [propertyId], references: [id])
+  viewedAt   DateTime @default(now()) @map("viewed_at")
+
+  @@unique([userId, propertyId])
+  @@map("contact_views")
+}
+
+// ─── Notification Preferences ────────────────────────────────
+
+model NotificationPreference {
+  id             String         @id @default(uuid())
+  userId         String         @unique @map("user_id")
+  user           User           @relation(fields: [userId], references: [id])
+  emailEnabled   Boolean        @default(true) @map("email_enabled")
+  smsEnabled     Boolean        @default(true) @map("sms_enabled")
+  preferredTypes PropertyType[] @default([]) @map("preferred_types")
+  preferredCities String[]      @default([]) @map("preferred_cities")
+  minPrice       Float?         @map("min_price")
+  maxPrice       Float?         @map("max_price")
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+
+  @@map("notification_preferences")
+}
+
+model Lead {
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  user       User     @relation(fields: [userId], references: [id])
+  propertyId String   @map("property_id")
+  property   Property @relation(fields: [propertyId], references: [id])
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@unique([userId, propertyId])
+  @@map("leads")
+}
