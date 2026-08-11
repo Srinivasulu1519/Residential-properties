@@ -22,6 +22,8 @@ export default function PropertiesPage() {
   const [status, setStatus] = useState(searchParams.get("status") || "all")
   const [city, setCity] = useState("all")
   const [location, setLocation] = useState("all")
+  const [minPrice, setMinPrice] = useState(searchParams.get("minPrice") || "all")
+  const [maxPrice, setMaxPrice] = useState(searchParams.get("maxPrice") || "all")
   const [metadataFilters, setMetadataFilters] = useState<Record<string, any>>({})
 
   const updateMetadataFilter = (key: string, value: any) => {
@@ -63,6 +65,11 @@ export default function PropertiesPage() {
   useEffect(() => {
     const searchParam = searchParams.get("search") || ""
     setSearch(searchParam)
+  }, [searchParams])
+
+  useEffect(() => {
+    setMinPrice(searchParams.get("minPrice") || "all")
+    setMaxPrice(searchParams.get("maxPrice") || "all")
   }, [searchParams])
 
   // Track search history with debounce
@@ -125,6 +132,16 @@ export default function PropertiesPage() {
     if (location !== "all") {
       result = result.filter((p) => p.location === location)
     }
+    
+    // Price Filtering
+    if (minPrice !== "all") {
+      const min = parseInt(minPrice)
+      result = result.filter((p) => (p.maxPrice || p.price) >= min)
+    }
+    if (maxPrice !== "all") {
+      const max = parseInt(maxPrice)
+      result = result.filter((p) => p.price <= max)
+    }
 
     // Metadata Filters
     Object.entries(metadataFilters).forEach(([key, value]) => {
@@ -159,7 +176,7 @@ export default function PropertiesPage() {
   }, [properties, search, type, status, city, location, sortBy, metadataFilters])
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-slate-50">
       <SiteHeader />
 
       <main className="flex-1">
@@ -197,6 +214,10 @@ export default function PropertiesPage() {
               showTypeFilter={!searchParams.get("type")}
               metadataFilters={metadataFilters}
               onMetadataFilterChange={updateMetadataFilter}
+              minPrice={minPrice}
+              maxPrice={maxPrice}
+              onMinPriceChange={setMinPrice}
+              onMaxPriceChange={setMaxPrice}
               onClearFilters={clearFilters}
             />
 

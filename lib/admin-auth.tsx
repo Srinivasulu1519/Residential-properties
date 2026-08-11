@@ -22,6 +22,7 @@ export interface AuthUser {
 
 interface AdminAuthContextType {
   isAuthenticated: boolean
+  isInitialLoading: boolean
   user: AuthUser | null
   token: string | null
   login: (email: string, password: string) => Promise<{ success: boolean; message: string }>
@@ -41,6 +42,7 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(null)
   const [user, setUser] = useState<AuthUser | null>(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isInitialLoading, setIsInitialLoading] = useState(true)
   const pathname = usePathname()
 
   const getAuthHeaders = useCallback((): Record<string, string> => {
@@ -50,7 +52,10 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
 
   const refreshUser = useCallback(async (roleHint?: string) => {
     try {
-      const url = roleHint ? `/api/auth/me?role=${roleHint}` : "/api/auth/me"
+      const currentRole = user?.role || (typeof window !== "undefined" ? JSON.parse(sessionStorage.getItem(USER_KEY) || "{}").role : null)
+      const role = roleHint || currentRole || (pathname?.startsWith("/admin") ? "admin" : "user")
+      
+      const url = role ? `/api/auth/me?role=${role}` : "/api/auth/me"
       const res = await fetch(url, {
         headers: { ...getAuthHeaders() }
       })
@@ -59,8 +64,8 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
       if (data.success) {
         setUser(data.user)
         setIsAuthenticated(true)
+        setToken(sessionStorage.getItem(TOKEN_KEY))
         sessionStorage.setItem(USER_KEY, JSON.stringify(data.user))
-        // The cookie might still switch, but our headers will keep this tab stable
       } else {
         setUser(null)
         setIsAuthenticated(false)
@@ -71,28 +76,60 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
       console.error("Failed to refresh user:", err)
       setUser(null)
       setIsAuthenticated(false)
+    } finally {
+      setIsInitialLoading(false)
     }
-  }, [getAuthHeaders])
+  }, [getAuthHeaders, user?.role, pathname])
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const roleHint = pathname?.startsWith("/admin") ? "admin" : "user"
-
-      // Initial state from sessionStorage for speed
-      const storedUser = sessionStorage.getItem(USER_KEY)
-      const storedToken = sessionStorage.getItem(TOKEN_KEY)
+      // 1. Recover state from sessionStorage immediately for zero-flicker
+      let storedUser = sessionStorage.getItem(USER_KEY)
+      let storedToken = sessionStorage.getItem(TOKEN_KEY)
+      
+      // 1.5. Check for Token in Hash (Admin Session Transfer)
+      const hash = window.location.hash
+      let recoveredAdminToken = null
+      if (hash.includes("as=")) {
+        const hashToken = hash.split("as=")[1]?.split("&")[0]
+        if (hashToken) {
+          recoveredAdminToken = hashToken
+          storedToken = hashToken
+          sessionStorage.setItem(TOKEN_KEY, hashToken)
+          // Also clear the hash from the URL
+          window.history.replaceState(null, "", window.location.pathname + window.location.search)
+        }
+      }
+      
       if (storedUser && storedToken) {
-        const parsed = JSON.parse(storedUser)
-        if (parsed.role === roleHint) {
+        try {
+          const parsed = JSON.parse(storedUser)
           setUser(parsed)
           setIsAuthenticated(true)
           setToken(storedToken)
+        } catch (e) { 
+            console.error("Session parse error", e) 
+            sessionStorage.removeItem(USER_KEY)
+            sessionStorage.removeItem(TOKEN_KEY)
         }
       }
 
+      // 2. Perform background refresh to ensure session is still valid
+      // Only provide a role hint if we DON'T have a stored user
+      const currentStoredRole = storedUser ? JSON.parse(storedUser).role : null
+      
+      // CRITICAL: If we recovered an admin token from the hash, force 'admin' role
+      const roleHint = recoveredAdminToken 
+        ? "admin" 
+        : (!currentStoredRole ? (pathname?.startsWith("/admin") ? "admin" : "user") : currentStoredRole)
+      
       refreshUser(roleHint)
+      
+      // Safety timeout: if refresh takes too long, stop loading
+      const timer = setTimeout(() => setIsInitialLoading(false), 3000)
+      return () => clearTimeout(timer)
     }
-  }, [refreshUser, pathname])
+  }, [refreshUser])
 
   const login = useCallback(async (email: string, password: string) => {
     try {
@@ -175,6 +212,7 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
     <AdminAuthContext.Provider
       value={{ 
         isAuthenticated, 
+        isInitialLoading,
         user, 
         token, 
         login, 

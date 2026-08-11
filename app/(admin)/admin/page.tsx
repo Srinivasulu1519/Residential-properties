@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { Building2, Lock, Eye, EyeOff, Mail, Loader2 } from "lucide-react"
+import Image from "next/image"
+import { Building2, Lock, Eye, EyeOff, Mail, Loader2, Shield } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -37,7 +38,6 @@ export default function AdminLoginPage() {
     try {
       const result = await login(email, password)
       if (result.success) {
-        // Check if user has admin role after login by reading from sessionStorage
         const storedUser = sessionStorage.getItem("realestate_auth_user")
         const userData = storedUser ? JSON.parse(storedUser) : null
         if (userData?.role !== "admin") {
@@ -58,11 +58,23 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-secondary/30 px-4">
-      <Card className="w-full max-w-md border-border">
+    <div className="relative flex min-h-screen items-center justify-center">
+      {/* Full-screen background */}
+      <Image
+        src="/images/admin-bg.png"
+        alt=""
+        fill
+        className="object-cover"
+        priority
+        sizes="100vw"
+      />
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900/85 via-slate-900/70 to-emerald-900/50" />
+
+      {/* Card */}
+      <Card className="relative z-10 w-full max-w-md border-white/10 bg-white/95 backdrop-blur-xl shadow-2xl">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-primary">
-            <Building2 className="h-7 w-7 text-primary-foreground" />
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-slate-900 shadow-lg shadow-slate-900/30">
+            <Shield className="h-7 w-7 text-white" />
           </div>
           <CardTitle className="font-serif text-2xl">Admin Panel</CardTitle>
           <CardDescription>
@@ -119,7 +131,7 @@ export default function AdminLoginPage() {
                 <p className="text-sm text-destructive">{error}</p>
               )}
             </div>
-            <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+            <Button type="submit" className="w-full bg-slate-900 hover:bg-slate-800 text-white" size="lg" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -129,7 +141,6 @@ export default function AdminLoginPage() {
                 "Sign In"
               )}
             </Button>
-
           </form>
         </CardContent>
       </Card>

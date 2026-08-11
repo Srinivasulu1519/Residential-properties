@@ -27,7 +27,7 @@ export function PropVistaLogo({
         <div className={cn("flex items-center", s.gap, className)}>
             {/* Dynamic animated SVG logo */}
             <div className={cn("relative group", s.icon)}>
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-500 opacity-90 group-hover:opacity-100 transition-opacity duration-300 shadow-lg group-hover:shadow-emerald-500/25" />
+                <div className="absolute inset-0 rounded-xl bg-primary opacity-90 group-hover:opacity-100 transition-opacity duration-300 shadow-lg group-hover:shadow-primary/25" />
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-tr from-white/10 to-transparent" />
                 <svg
                     viewBox="0 0 40 40"

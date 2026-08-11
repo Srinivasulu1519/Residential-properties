@@ -121,7 +121,7 @@ export function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModalProps) 
                     contact: user?.phone
                 },
                 theme: {
-                    color: "#059669" // Emerald-600
+                    color: "#d97706" // Emerald-600
                 },
                 modal: {
                     ondismiss: function() {
@@ -147,10 +147,10 @@ export function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModalProps) 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => { if (!open) { onClose(); reset(); } }}>
             <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden border-none shadow-2xl">
-                <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-900 p-8 text-white relative overflow-hidden">
+                <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-primary/80 p-8 text-white relative overflow-hidden">
                     {/* Decorative elements */}
-                    <div className="absolute -top-10 -right-10 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl" />
-                    <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl" />
+                    <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/10 rounded-full blur-3xl" />
+                    <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-primary/10 rounded-full blur-3xl" />
                     
                     <button 
                         onClick={onClose}
@@ -159,7 +159,7 @@ export function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModalProps) 
                         <X className="h-4 w-4" />
                     </button>
 
-                    <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-500/30 mb-4 px-3 py-1">
+                    <Badge className="bg-primary/20 text-emerald-100 border-primary/50/30 mb-4 px-3 py-1">
                         <Zap className="h-3 w-3 mr-1.5 fill-current" />
                         Premium Plan Upgrade
                     </Badge>
@@ -178,12 +178,12 @@ export function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModalProps) 
                                     onClick={() => setMethod("card")}
                                     className={cn(
                                         "flex items-center gap-4 p-4 rounded-xl border-2 transition-all text-left group",
-                                        method === "card" ? "border-emerald-500 bg-emerald-50/50 shadow-sm" : "border-slate-100 hover:border-slate-200"
+                                        method === "card" ? "border-primary/50 bg-primary/5/50 shadow-sm" : "border-slate-100 hover:border-slate-200"
                                     )}
                                 >
                                     <div className={cn(
                                         "h-10 w-10 rounded-lg flex items-center justify-center transition-colors",
-                                        method === "card" ? "bg-emerald-500 text-white" : "bg-slate-100 text-slate-400 group-hover:bg-slate-200"
+                                        method === "card" ? "bg-primary text-white" : "bg-slate-100 text-slate-400 group-hover:bg-slate-200"
                                     )}>
                                         <CreditCard className="h-5 w-5" />
                                     </div>
@@ -191,19 +191,19 @@ export function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModalProps) 
                                         <p className="font-bold text-slate-900">Credit / Debit Card</p>
                                         <p className="text-xs text-slate-500">Visa, Mastercard, RuPay</p>
                                     </div>
-                                    {method === "card" && <Check className="h-5 w-5 text-emerald-500" />}
+                                    {method === "card" && <Check className="h-5 w-5 text-primary" />}
                                 </button>
 
                                 <button
                                     onClick={() => setMethod("upi")}
                                     className={cn(
                                         "flex items-center gap-4 p-4 rounded-xl border-2 transition-all text-left group",
-                                        method === "upi" ? "border-emerald-500 bg-emerald-50/50 shadow-sm" : "border-slate-100 hover:border-slate-200"
+                                        method === "upi" ? "border-primary/50 bg-primary/5/50 shadow-sm" : "border-slate-100 hover:border-slate-200"
                                     )}
                                 >
                                     <div className={cn(
                                         "h-10 w-10 rounded-lg flex items-center justify-center transition-colors",
-                                        method === "upi" ? "bg-emerald-500 text-white" : "bg-slate-100 text-slate-400 group-hover:bg-slate-200"
+                                        method === "upi" ? "bg-primary text-white" : "bg-slate-100 text-slate-400 group-hover:bg-slate-200"
                                     )}>
                                         <Smartphone className="h-5 w-5" />
                                     </div>
@@ -211,19 +211,19 @@ export function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModalProps) 
                                         <p className="font-bold text-slate-900">UPI / Google Pay</p>
                                         <p className="text-xs text-slate-500">Instant payment via PhonePe, GPay</p>
                                     </div>
-                                    {method === "upi" && <Check className="h-5 w-5 text-emerald-500" />}
+                                    {method === "upi" && <Check className="h-5 w-5 text-primary" />}
                                 </button>
 
                                 <button
                                     onClick={() => setMethod("netbanking")}
                                     className={cn(
                                         "flex items-center gap-4 p-4 rounded-xl border-2 transition-all text-left group",
-                                        method === "netbanking" ? "border-emerald-500 bg-emerald-50/50 shadow-sm" : "border-slate-100 hover:border-slate-200"
+                                        method === "netbanking" ? "border-primary/50 bg-primary/5/50 shadow-sm" : "border-slate-100 hover:border-slate-200"
                                     )}
                                 >
                                     <div className={cn(
                                         "h-10 w-10 rounded-lg flex items-center justify-center transition-colors",
-                                        method === "netbanking" ? "bg-emerald-500 text-white" : "bg-slate-100 text-slate-400 group-hover:bg-slate-200"
+                                        method === "netbanking" ? "bg-primary text-white" : "bg-slate-100 text-slate-400 group-hover:bg-slate-200"
                                     )}>
                                         <Building className="h-5 w-5" />
                                     </div>
@@ -231,12 +231,12 @@ export function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModalProps) 
                                         <p className="font-bold text-slate-900">Net Banking</p>
                                         <p className="text-xs text-slate-500">All major Indian banks supported</p>
                                     </div>
-                                    {method === "netbanking" && <Check className="h-5 w-5 text-emerald-500" />}
+                                    {method === "netbanking" && <Check className="h-5 w-5 text-primary" />}
                                 </button>
                             </div>
                             <Button 
                                 onClick={() => setStep("details")}
-                                className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-lg shadow-emerald-600/20 group"
+                                className="w-full h-12 bg-primary hover:bg-primary/90 text-white rounded-xl shadow-lg shadow-indigo-600/20 group"
                             >
                                 Continue to Pay
                                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -279,7 +279,7 @@ export function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModalProps) 
                                 <div className="space-y-4">
                                     <div className="space-y-2">
                                         <Label htmlFor="upi-id">UPI ID</Label>
-                                        <Input id="upi-id" placeholder="username@okaxis" className="h-11 border-emerald-100 focus:border-emerald-500" />
+                                        <Input id="upi-id" placeholder="username@okaxis" className="h-11 border-primary/10 focus:border-primary/50" />
                                         <p className="text-[10px] text-slate-400 italic">A payment request will be sent to your UPI app.</p>
                                     </div>
                                 </div>
@@ -317,7 +317,7 @@ export function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModalProps) 
                             <Button 
                                 onClick={handleProcessPayment}
                                 disabled={loading}
-                                className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-lg shadow-emerald-600/20"
+                                className="w-full h-12 bg-primary hover:bg-primary/90 text-white rounded-xl shadow-lg shadow-indigo-600/20"
                             >
                                 {loading ? (
                                     <>
@@ -337,9 +337,9 @@ export function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModalProps) 
                     {step === "processing" && (
                         <div className="py-20 flex flex-col items-center justify-center text-center animate-in zoom-in-95 duration-500">
                             <div className="relative mb-6">
-                                <div className="h-24 w-24 rounded-full border-4 border-emerald-100 animate-pulse" />
+                                <div className="h-24 w-24 rounded-full border-4 border-primary/10 animate-pulse" />
                                 <div className="absolute inset-0 flex items-center justify-center">
-                                    <Loader2 className="h-10 w-10 text-emerald-600 animate-spin" />
+                                    <Loader2 className="h-10 w-10 text-primary animate-spin" />
                                 </div>
                             </div>
                             <h3 className="text-xl font-serif font-bold text-slate-900 mb-2">Processing Payment</h3>

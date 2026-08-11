@@ -44,6 +44,10 @@ interface PropertyFiltersProps {
   onMetadataFilterChange?: (key: string, value: any) => void
   location?: string
   onLocationChange?: (value: string) => void
+  minPrice?: string
+  maxPrice?: string
+  onMinPriceChange?: (value: string) => void
+  onMaxPriceChange?: (value: string) => void
   locations?: string[]
   cities?: string[]
   onClearFilters?: () => void
@@ -66,6 +70,10 @@ export function PropertyFilters({
   onMetadataFilterChange,
   location = "all",
   onLocationChange,
+  minPrice = "all",
+  maxPrice = "all",
+  onMinPriceChange,
+  onMaxPriceChange,
   locations = [],
   cities = [],
   onClearFilters,
@@ -75,6 +83,8 @@ export function PropertyFilters({
     status,
     city,
     location,
+    minPrice,
+    maxPrice,
   ].filter((f) => f !== "all").length
 
   const activeMetadataCount = Object.values(metadataFilters).filter(v => v && v !== "all").length
@@ -91,6 +101,8 @@ export function PropertyFilters({
     onCityChange("all")
     if (onLocationChange) onLocationChange("all")
     onSortChange("newest")
+    if (onMinPriceChange) onMinPriceChange("all")
+    if (onMaxPriceChange) onMaxPriceChange("all")
   }
 
   // Active filter pills
@@ -108,6 +120,12 @@ export function PropertyFilters({
   }
   if (location !== "all") {
     activeFilterPills.push({ label: `Location: ${location}`, onRemove: () => onLocationChange?.("all") })
+  }
+  if (minPrice !== "all") {
+    activeFilterPills.push({ label: `Min: ₹${parseInt(minPrice).toLocaleString()}`, onRemove: () => onMinPriceChange?.("all") })
+  }
+  if (maxPrice !== "all") {
+    activeFilterPills.push({ label: `Max: ₹${parseInt(maxPrice).toLocaleString()}`, onRemove: () => onMaxPriceChange?.("all") })
   }
   // Metadata pills
   if (onMetadataFilterChange) {
@@ -475,16 +493,16 @@ export function PropertyFilters({
               <Input
                 type="number"
                 placeholder="Min Price"
-                value={metadataFilters.minPrice || ""}
-                onChange={(e) => onMetadataFilterChange("minPrice", e.target.value || "all")}
+                value={minPrice === "all" ? "" : minPrice}
+                onChange={(e) => onMinPriceChange?.(e.target.value || "all")}
                 className="h-8 w-[120px] text-xs"
               />
               <span className="text-xs text-muted-foreground">to</span>
               <Input
                 type="number"
                 placeholder="Max Price"
-                value={metadataFilters.maxPrice || ""}
-                onChange={(e) => onMetadataFilterChange("maxPrice", e.target.value || "all")}
+                value={maxPrice === "all" ? "" : maxPrice}
+                onChange={(e) => onMaxPriceChange?.(e.target.value || "all")}
                 className="h-8 w-[120px] text-xs"
               />
             </>

@@ -69,23 +69,23 @@ export function RentalContactGate({ propertyId, hasOwnerContact }: RentalContact
     // Show paywall
     if (requiresSubscription) {
         return (
-            <div className="rounded-xl border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 p-6 text-center">
-                <div className="h-14 w-14 mx-auto rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center mb-4 shadow-lg">
+            <div className="rounded-xl border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-slate-50 p-6 text-center">
+                <div className="h-14 w-14 mx-auto rounded-2xl bg-gradient-to-br from-primary to-slate-800 flex items-center justify-center mb-4 shadow-lg">
                     <Lock className="h-7 w-7 text-white" />
                 </div>
-                <h3 className="text-lg font-bold text-amber-900 mb-2">
+                <h3 className="text-lg font-bold text-slate-900 mb-2">
                     Free Contact Views Exhausted
                 </h3>
-                <p className="text-sm text-amber-700 mb-1">
+                <p className="text-sm text-primary mb-1">
                     You&apos;ve used all {viewsInfo?.limit || 7} free contact views.
                 </p>
-                <p className="text-xs text-amber-600 mb-5">
+                <p className="text-xs text-primary mb-5">
                     Subscribe to get unlimited access to owner contact details.
                 </p>
                 <Button 
                     size="lg" 
                     onClick={handleUpgrade}
-                    className="w-full gap-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white shadow-md"
+                    className="w-full gap-2 bg-gradient-to-r from-primary to-slate-800 hover:from-primary hover:to-primary/90 text-white shadow-md"
                 >
                     <CreditCard className="h-4 w-4" />
                     Subscribe — ₹499/month
@@ -97,31 +97,31 @@ export function RentalContactGate({ propertyId, hasOwnerContact }: RentalContact
     // Show unlocked contact
     if (contact) {
         return (
-            <div className="rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-5">
+            <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-primary/5 to-slate-50 p-5">
                 <div className="flex items-center gap-2 mb-4">
-                    <CheckCircle2 className="h-5 w-5 text-emerald-600" />
-                    <h3 className="font-semibold text-emerald-900">Owner Contact Details</h3>
+                    <CheckCircle2 className="h-5 w-5 text-primary" />
+                    <h3 className="font-semibold text-slate-900">Owner Contact Details</h3>
                 </div>
                 <div className="space-y-3">
                     {contact.ownerName && (
                         <div className="flex items-center gap-3 text-sm">
-                            <div className="h-9 w-9 rounded-lg bg-emerald-100 flex items-center justify-center">
-                                <User className="h-4 w-4 text-emerald-700" />
+                            <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <User className="h-4 w-4 text-primary" />
                             </div>
                             <div>
-                                <p className="text-xs text-emerald-600">Owner Name</p>
-                                <p className="font-medium text-emerald-900">{contact.ownerName}</p>
+                                <p className="text-xs text-primary">Owner Name</p>
+                                <p className="font-medium text-slate-900">{contact.ownerName}</p>
                             </div>
                         </div>
                     )}
                     {contact.ownerPhone && (
                         <div className="flex items-center gap-3 text-sm">
-                            <div className="h-9 w-9 rounded-lg bg-emerald-100 flex items-center justify-center">
-                                <Phone className="h-4 w-4 text-emerald-700" />
+                            <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <Phone className="h-4 w-4 text-primary" />
                             </div>
                             <div>
-                                <p className="text-xs text-emerald-600">Phone</p>
-                                <a href={`tel:${contact.ownerPhone}`} className="font-medium text-emerald-900 hover:underline">
+                                <p className="text-xs text-primary">Phone</p>
+                                <a href={`tel:${contact.ownerPhone}`} className="font-medium text-slate-900 hover:underline">
                                     {contact.ownerPhone}
                                 </a>
                             </div>
@@ -129,12 +129,12 @@ export function RentalContactGate({ propertyId, hasOwnerContact }: RentalContact
                     )}
                     {contact.ownerEmail && (
                         <div className="flex items-center gap-3 text-sm">
-                            <div className="h-9 w-9 rounded-lg bg-emerald-100 flex items-center justify-center">
-                                <Mail className="h-4 w-4 text-emerald-700" />
+                            <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <Mail className="h-4 w-4 text-primary" />
                             </div>
                             <div>
-                                <p className="text-xs text-emerald-600">Email</p>
-                                <a href={`mailto:${contact.ownerEmail}`} className="font-medium text-emerald-900 hover:underline">
+                                <p className="text-xs text-primary">Email</p>
+                                <a href={`mailto:${contact.ownerEmail}`} className="font-medium text-slate-900 hover:underline">
                                     {contact.ownerEmail}
                                 </a>
                             </div>
@@ -142,7 +142,7 @@ export function RentalContactGate({ propertyId, hasOwnerContact }: RentalContact
                     )}
                 </div>
                 {viewsInfo && !user?.subscriptionActive && user?.role !== "admin" && (
-                    <p className="text-xs text-emerald-600 mt-4 pt-3 border-t border-emerald-200">
+                    <p className="text-xs text-primary mt-4 pt-3 border-t border-primary/20">
                         📊 {viewsInfo.used} of {viewsInfo.limit} free contact views used
                     </p>
                 )}
@@ -166,7 +166,7 @@ export function RentalContactGate({ propertyId, hasOwnerContact }: RentalContact
             <Button
                 onClick={handleViewContact}
                 disabled={loading}
-                className="w-full gap-2 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-600/90 hover:to-teal-500/90 shadow-md"
+                className="w-full gap-2 bg-primary hover:bg-primary/90 shadow-md"
             >
                 <Phone className="h-4 w-4" />
                 {loading ? "Loading..." : "View Owner Contact"}

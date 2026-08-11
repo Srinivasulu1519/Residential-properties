@@ -35,11 +35,11 @@ export default function PostPropertyPage() {
     }
 
     return (
-        <main className="flex-1">
+        <main className="flex-1 bg-slate-50">
             {/* Hero */}
-            <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-900 px-4 py-12 lg:px-8">
+            <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-primary/80 px-4 py-12 lg:px-8">
                 <div className="mx-auto max-w-3xl text-center">
-                    <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-500/30 mb-4">
+                    <Badge className="bg-primary/20 text-emerald-100 border-primary/50/30 mb-4">
                         <Sparkles className="h-3 w-3 mr-1" />
                         Free for 30 Days
                     </Badge>
@@ -61,24 +61,24 @@ export default function PostPropertyPage() {
             {/* Form Section */}
             <div className="mx-auto max-w-5xl px-4 py-12 lg:px-8">
                 {isExpired && !user.subscriptionActive && user.role !== "admin" ? (
-                    <Card className="border-2 border-amber-200 bg-amber-50/50 shadow-xl overflow-hidden">
-                        <div className="h-2 bg-gradient-to-r from-amber-500 to-orange-500" />
+                    <Card className="border-2 border-primary/20 bg-primary/5/50 shadow-xl overflow-hidden">
+                        <div className="h-2 bg-gradient-to-r from-primary to-primary" />
                         <CardContent className="p-8 text-center space-y-6">
-                            <div className="h-20 w-20 mx-auto rounded-3xl bg-amber-100 flex items-center justify-center text-amber-600 shadow-inner">
+                            <div className="h-20 w-20 mx-auto rounded-3xl bg-primary/10 flex items-center justify-center text-primary shadow-inner">
                                 <Building2 className="h-10 w-10" />
                             </div>
                             <div className="space-y-2">
                                 <h2 className="font-serif text-3xl font-bold text-slate-900">Trial Period Ended</h2>
                                 <p className="text-slate-600 max-w-md mx-auto leading-relaxed">
                                     Your 30-day free trial for property posting has expired. 
-                                    Upgrade to <span className="text-emerald-700 font-bold">Premium</span> to continue listing your properties.
+                                    Upgrade to <span className="text-primary font-bold">Premium</span> to continue listing your properties.
                                 </p>
                             </div>
                             <div className="pt-4">
                                 <Button 
                                     size="lg" 
                                     onClick={() => setIsPaymentModalOpen(true)}
-                                    className="h-14 px-10 text-lg bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white shadow-xl shadow-amber-500/20 transition-all hover:scale-105 active:scale-95 group"
+                                    className="h-14 px-10 text-lg bg-gradient-to-r from-primary to-slate-800 hover:from-primary hover:to-primary/90 text-white shadow-xl shadow-primary/20 transition-all hover:scale-105 active:scale-95 group"
                                 >
                                     Upgrade to Premium Now
                                     <Sparkles className="ml-2 h-5 w-5 animate-pulse group-hover:scale-110" />

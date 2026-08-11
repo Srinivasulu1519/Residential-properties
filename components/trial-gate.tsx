@@ -44,20 +44,20 @@ export function TrialGate({ children }: { children: React.ReactNode }) {
         return (
             <>
                 {daysLeft <= 7 && daysLeft > 0 && (
-                    <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex items-center justify-between animate-in fade-in slide-in-from-top-4 duration-500">
+                    <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 mb-6 flex items-center justify-between animate-in fade-in slide-in-from-top-4 duration-500">
                         <div className="flex items-center gap-3">
-                            <Clock className="h-5 w-5 text-amber-600" />
+                            <Clock className="h-5 w-5 text-primary" />
                             <div>
-                                <p className="text-sm font-medium text-amber-900">
+                                <p className="text-sm font-medium text-slate-900">
                                     Trial expires in {daysLeft} day{daysLeft !== 1 ? "s" : ""}
                                 </p>
-                                <p className="text-xs text-amber-600">Subscribe to continue accessing all features</p>
+                                <p className="text-xs text-primary">Subscribe to continue accessing all features</p>
                             </div>
                         </div>
                         <Button 
                             size="sm" 
                             onClick={handleUpgrade}
-                            className="bg-amber-600 hover:bg-amber-700 text-white gap-1.5"
+                            className="bg-primary hover:bg-primary/90 text-white gap-1.5"
                         >
                             <CreditCard className="h-3.5 w-3.5" />
                             Subscribe Now
@@ -80,7 +80,7 @@ export function TrialGate({ children }: { children: React.ReactNode }) {
             {/* Paywall overlay */}
             <div className="absolute inset-0 flex items-center justify-center z-10 p-4">
                 <div className="bg-white rounded-2xl shadow-2xl border border-border p-8 max-w-md w-full text-center animate-in zoom-in-95 duration-300">
-                    <div className="h-16 w-16 mx-auto rounded-2xl bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center mb-5 shadow-lg">
+                    <div className="h-16 w-16 mx-auto rounded-2xl bg-gradient-to-br from-primary to-primary flex items-center justify-center mb-5 shadow-lg">
                         <Shield className="h-8 w-8 text-white" />
                     </div>
                     <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
@@ -93,7 +93,7 @@ export function TrialGate({ children }: { children: React.ReactNode }) {
                         <Button 
                             size="lg" 
                             onClick={handleUpgrade}
-                            className="w-full gap-2 bg-gradient-to-r from-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 shadow-md h-12"
+                            className="w-full gap-2 bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 shadow-md h-12"
                         >
                             <CreditCard className="h-4 w-4" />
                             Subscribe — ₹499/month

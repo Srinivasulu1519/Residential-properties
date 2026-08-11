@@ -1,8 +1,9 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 import { Building2, Lock, Eye, EyeOff, Mail, User, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -21,16 +22,18 @@ export default function UserRegisterPage() {
     const [isLoading, setIsLoading] = useState(false)
     const { isAuthenticated, user, register } = useAdminAuth()
     const router = useRouter()
+    const searchParams = useSearchParams()
+    const redirectPath = searchParams.get("redirect") || "/dashboard"
 
     useEffect(() => {
         if (isAuthenticated && user) {
             if (user.role === "admin") {
                 router.push("/admin/dashboard")
             } else {
-                router.push("/dashboard")
+                router.push(redirectPath)
             }
         }
-    }, [isAuthenticated, user, router])
+    }, [isAuthenticated, user, router, redirectPath])
 
     if (isAuthenticated && user) {
         return null
@@ -45,6 +48,7 @@ export default function UserRegisterPage() {
             const result = await register(name, email, password, phone)
             if (result.success) {
                 toast.success("Account created successfully!")
+                router.push(redirectPath)
             } else {
                 setError(result.message)
             }
@@ -56,10 +60,22 @@ export default function UserRegisterPage() {
     }
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-secondary/30 px-4">
-            <Card className="w-full max-w-md border-border">
+        <div className="relative flex min-h-screen items-center justify-center">
+            {/* Full-screen background */}
+            <Image
+                src="/images/auth-bg.png"
+                alt=""
+                fill
+                className="object-cover"
+                priority
+                sizes="100vw"
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-900/80 via-slate-900/60 to-emerald-900/40" />
+
+            {/* Card */}
+            <Card className="relative z-10 w-full max-w-md border-white/10 bg-white/95 backdrop-blur-xl shadow-2xl my-8">
                 <CardHeader className="text-center">
-                    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-primary">
+                    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-primary shadow-lg shadow-primary/30">
                         <Building2 className="h-7 w-7 text-primary-foreground" />
                     </div>
                     <CardTitle className="font-serif text-2xl">Create Account</CardTitle>

@@ -75,7 +75,7 @@ export async function GET(request: NextRequest) {
         }
         if (minPrice) {
             const min = parseFloat(minPrice)
-            properties = properties.filter((p) => p.price >= min)
+            properties = properties.filter((p: any) => (p.maxPrice || p.price) >= min)
         }
         if (maxPrice) {
             const max = parseFloat(maxPrice)

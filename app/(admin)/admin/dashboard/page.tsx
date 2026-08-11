@@ -104,10 +104,10 @@ export default function AdminDashboardPage() {
   return (
     <div className="space-y-8">
       {/* ========== HERO WELCOME ========== */}
-      <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-900 p-8 lg:p-10 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+      <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-primary/80 p-8 lg:p-10 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
         {/* Decorative elements */}
-        <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-emerald-500/10 blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-teal-500/10 blur-2xl" />
+        <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-primary/10 blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-primary/10 blur-2xl" />
         <div className="absolute top-4 right-8 w-24 h-24 rounded-xl bg-white/5 rotate-12" />
         <div className="absolute bottom-4 right-24 w-16 h-16 rounded-xl bg-white/5 -rotate-6" />
 
@@ -117,9 +117,9 @@ export default function AdminDashboardPage() {
               {getGreeting()}, {user?.name?.split(' ')[0] || "Admin"} 👋
             </h1>
             <p className="mt-2 text-white/50 text-sm max-w-lg leading-relaxed">
-              You have <span className="text-emerald-400 font-semibold">{stats.total} properties</span> listed,
-              with <span className="text-emerald-400 font-semibold">{stats.available} available</span> and{" "}
-              <span className="text-amber-400 font-semibold">{stats.upcoming} upcoming</span>.
+              You have <span className="text-primary/80 font-semibold">{stats.total} properties</span> listed,
+              with <span className="text-primary/80 font-semibold">{stats.available} available</span> and{" "}
+              <span className="text-primary/80 font-semibold">{stats.upcoming} upcoming</span>.
             </p>
           </div>
           <Button className="gap-2 bg-white text-slate-900 hover:bg-white/90 shadow-lg shadow-black/20 shrink-0" asChild>
@@ -139,8 +139,8 @@ export default function AdminDashboardPage() {
             label="Total"
             value={stats.total}
             icon={Building2}
-            gradient="from-primary to-emerald-600"
-            bg="from-primary/10 to-emerald-50"
+            gradient="from-primary to-primary"
+            bg="from-primary/10 to-primary/5"
             border="border-primary/10"
             delay={0}
           />
@@ -148,8 +148,8 @@ export default function AdminDashboardPage() {
             label="Plots"
             value={stats.plots}
             icon={LandPlot}
-            gradient="from-sky-500 to-teal-600"
-            bg="from-sky-50 to-teal-50"
+            gradient="from-sky-500 to-yellow-600"
+            bg="from-sky-50 to-slate-50"
             border="border-sky-100"
             delay={40}
           />
@@ -175,17 +175,17 @@ export default function AdminDashboardPage() {
             label="Farmhouse"
             value={stats.farmhouse}
             icon={Home}
-            gradient="from-amber-500 to-yellow-600"
-            bg="from-amber-50 to-yellow-50"
-            border="border-amber-100"
+            gradient="from-primary to-yellow-600"
+            bg="from-primary/5 to-slate-50"
+            border="border-primary/10"
             delay={160}
           />
           <StatCard
             label="Agri Land"
             value={stats.agricultureLand}
             icon={MapPin}
-            gradient="from-green-500 to-emerald-600"
-            bg="from-green-50 to-emerald-50"
+            gradient="from-green-500 to-primary"
+            bg="from-green-50 to-primary/5"
             border="border-green-100"
             delay={200}
           />
@@ -193,18 +193,18 @@ export default function AdminDashboardPage() {
             label="Rent"
             value={stats.rent}
             icon={Users}
-            gradient="from-teal-500 to-cyan-600"
-            bg="from-teal-50 to-cyan-50"
-            border="border-teal-100"
+            gradient="from-yellow-500 to-cyan-600"
+            bg="from-yellow-50 to-cyan-50"
+            border="border-slate-100"
             delay={240}
           />
           <StatCard
             label="Commercial"
             value={stats.commercial}
             icon={Building2}
-            gradient="from-emerald-500 to-teal-600"
-            bg="from-emerald-50 to-teal-50"
-            border="border-emerald-100"
+            gradient="from-primary to-yellow-600"
+            bg="from-primary/5 to-slate-50"
+            border="border-primary/10"
             delay={280}
           />
           <StatCard
@@ -221,10 +221,10 @@ export default function AdminDashboardPage() {
 
       {/* ========== STATUS OVERVIEW ========== */}
       <div className={`grid gap-4 sm:grid-cols-3 transition-all duration-700 delay-200 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-        <Card className="border-emerald-100 bg-gradient-to-br from-emerald-50/50 to-white overflow-hidden hover:shadow-md transition-shadow group">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 to-emerald-600" />
+        <Card className="border-primary/10 bg-gradient-to-br from-primary/5/50 to-white overflow-hidden hover:shadow-md transition-shadow group">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-400 to-primary" />
           <CardContent className="flex items-center gap-4 p-5">
-            <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-110 transition-transform">
+            <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-primary to-primary flex items-center justify-center shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform">
               <Eye className="h-5 w-5 text-white" />
             </div>
             <div>
@@ -236,10 +236,10 @@ export default function AdminDashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-amber-100 bg-gradient-to-br from-amber-50/50 to-white overflow-hidden hover:shadow-md transition-shadow group">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 to-orange-500" />
+        <Card className="border-primary/10 bg-gradient-to-br from-primary/5/50 to-white overflow-hidden hover:shadow-md transition-shadow group">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-400 to-primary" />
           <CardContent className="flex items-center gap-4 p-5">
-            <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/20 group-hover:scale-110 transition-transform">
+            <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-primary to-primary flex items-center justify-center shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform">
               <TrendingUp className="h-5 w-5 text-white" />
             </div>
             <div>
@@ -314,10 +314,10 @@ export default function AdminDashboardPage() {
                       <TableCell>
                         <Badge
                           className={`text-xs font-medium ${property.status === "available"
-                            ? "bg-emerald-100 text-emerald-800 border-emerald-200"
+                            ? "bg-primary/10 text-primary border-primary/20"
                             : property.status === "sold"
                               ? "bg-red-100 text-red-800 border-red-200"
-                              : "bg-amber-100 text-amber-800 border-amber-200"
+                              : "bg-primary/10 text-primary border-primary/20"
                             }`}
                         >
                           {property.status}

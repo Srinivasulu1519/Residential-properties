@@ -28,6 +28,11 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
+                <Link href="/tools/emi" className="transition-opacity hover:opacity-100 font-medium text-primary-foreground/90">
+                  EMI Calculator
+                </Link>
+              </li>
+              <li>
                 <Link href="/properties?type=plot" className="transition-opacity hover:opacity-100">
                   Plots
                 </Link>

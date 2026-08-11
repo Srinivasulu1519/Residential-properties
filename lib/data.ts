@@ -54,6 +54,7 @@ export interface Property {
   monthlyRent?: number
   securityDeposit?: number
   maintenanceCharge?: number
+  maxPrice?: number
   tenantType?: TenantType
 }
 
@@ -208,14 +209,21 @@ export const COMMON_FEATURES: Record<string, string[]> = {
 
 // ─── Helpers ─────────────────────────────────────────────────
 
-export function formatPrice(price: number): string {
-  if (price >= 10000000) {
-    return `${(price / 10000000).toFixed(2)} Cr`
+export function formatPrice(price: number, maxPrice?: number): string {
+  const format = (p: number) => {
+    if (p >= 10000000) {
+      return `${(p / 10000000).toFixed(2)} Cr`
+    }
+    if (p >= 100000) {
+      return `${(p / 100000).toFixed(2)} L`
+    }
+    return p.toLocaleString("en-IN")
   }
-  if (price >= 100000) {
-    return `${(price / 100000).toFixed(2)} L`
+
+  if (maxPrice && maxPrice > price) {
+    return `${format(price)} - ${format(maxPrice)}`
   }
-  return price.toLocaleString("en-IN")
+  return format(price)
 }
 
 export function generateId(): string {
@@ -263,6 +271,7 @@ export const SEED_PROPERTIES: Property[] = [
     title: "Emerald Heights Villa",
     type: "villa",
     price: 25000000,
+    maxPrice: 30000000,
     priceUnit: "total",
     fullAddress: "Whitefield, Bangalore",
     location: "Whitefield",
@@ -453,6 +462,7 @@ export const SEED_PROPERTIES: Property[] = [
     title: "Green Valley Plot - East",
     type: "plot",
     price: 5500000,
+    maxPrice: 6500000,
     priceUnit: "total",
     fullAddress: "Shamshabad, Hyderabad",
     location: "Shamshabad",

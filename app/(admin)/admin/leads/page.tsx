@@ -20,7 +20,7 @@ import { format } from "date-fns"
 import { useAdminAuth } from "@/lib/admin-auth"
 
 export default function AdminLeadsPage() {
-    const { authenticatedFetch } = useAdminAuth()
+    const { token, authenticatedFetch } = useAdminAuth()
     const [leads, setLeads] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
     const [searchTerm, setSearchTerm] = useState("")
@@ -93,8 +93,8 @@ export default function AdminLeadsPage() {
                                             </div>
                                         </div>
                                         <div className="space-y-2">
-                                            <div className="flex items-center text-xs text-slate-900 font-bold gap-2 bg-emerald-50 px-2 py-1 rounded-full border border-emerald-100 w-fit">
-                                                <Phone className="h-3.5 w-3.5 text-emerald-600" />
+                                            <div className="flex items-center text-xs text-slate-900 font-bold gap-2 bg-primary/5 px-2 py-1 rounded-full border border-primary/10 w-fit">
+                                                <Phone className="h-3.5 w-3.5 text-primary" />
                                                 <span>{lead.user.phone}</span>
                                             </div>
                                             <div className="flex items-center text-sm text-slate-600 gap-3">
@@ -115,7 +115,7 @@ export default function AdminLeadsPage() {
                                                 <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Interested In</p>
                                                 <h4 className="text-xl font-serif font-bold text-slate-900 line-clamp-1">{lead.property.title}</h4>
                                             </div>
-                                            <Badge className="bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-none px-3 py-1">
+                                            <Badge className="bg-primary/5 text-primary hover:bg-primary/10 border-none px-3 py-1">
                                                 High Interest
                                             </Badge>
                                         </div>
@@ -132,7 +132,7 @@ export default function AdminLeadsPage() {
 
                                         <div className="flex justify-end pt-2">
                                             <a 
-                                                href={`/properties/${lead.property.id}`} 
+                                                href={`/properties/${lead.property.id}#as=${token}`} 
                                                 target="_blank" 
                                                 className="text-primary text-sm font-semibold flex items-center gap-1.5 hover:underline"
                                             >

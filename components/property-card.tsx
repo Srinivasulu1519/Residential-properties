@@ -13,19 +13,19 @@ import { toast } from "sonner"
 import { useState } from "react"
 
 const statusColors: Record<string, string> = {
-  available: "bg-emerald-600 text-white hover:bg-emerald-700",
+  available: "bg-primary text-white hover:bg-primary/90",
   sold: "bg-red-500 text-white hover:bg-red-600",
-  upcoming: "bg-amber-500 text-white hover:bg-amber-600",
+  upcoming: "bg-primary text-white hover:bg-primary",
 }
 
 const typeColors: Record<string, string> = {
   plot: "bg-sky-100 text-sky-800 hover:bg-sky-200",
   apartment: "bg-violet-100 text-violet-800 hover:bg-violet-200",
   villa: "bg-rose-100 text-rose-800 hover:bg-rose-200",
-  farmhouse: "bg-amber-100 text-amber-800 hover:bg-amber-200",
+  farmhouse: "bg-primary/10 text-primary hover:bg-primary/20",
   agriculture_land: "bg-lime-100 text-lime-800 hover:bg-lime-200",
-  rent: "bg-teal-100 text-teal-800 hover:bg-teal-200",
-  commercial: "bg-emerald-100 text-emerald-800 hover:bg-emerald-200",
+  rent: "bg-slate-100 text-slate-700 hover:bg-slate-200",
+  commercial: "bg-primary/10 text-primary hover:bg-primary/20",
   independent_house: "bg-orange-100 text-orange-800 hover:bg-orange-200",
 }
 
@@ -99,7 +99,7 @@ export function PropertyCard({ property }: { property: Property }) {
               {property.status.charAt(0).toUpperCase() + property.status.slice(1)}
             </Badge>
             {property.type === "rent" && property.tenantType && property.tenantType !== "any" && (
-              <Badge className="bg-emerald-100 text-emerald-800 hover:bg-emerald-200 text-[10px] px-2 py-0.5" variant="secondary">
+              <Badge className="bg-primary/10 text-primary hover:bg-primary/20 text-[10px] px-2 py-0.5" variant="secondary">
                 {property.tenantType.charAt(0).toUpperCase() + property.tenantType.slice(1)} Only
               </Badge>
             )}
@@ -135,7 +135,10 @@ export function PropertyCard({ property }: { property: Property }) {
           </div>
           <div className="border-t border-border pt-3 flex items-center justify-between">
             <p className="font-serif text-xl font-bold text-primary">
-              {"Rs. "}{formatPrice(property.type === "rent" && property.monthlyRent ? property.monthlyRent : property.price)}
+              {"Rs. "}{formatPrice(
+                property.type === "rent" && property.monthlyRent ? property.monthlyRent : property.price,
+                property.maxPrice
+              )}
               {property.type === "rent" && <span className="text-sm font-normal text-muted-foreground">/mo</span>}
             </p>
             {property.type === "rent" && property.securityDeposit && (

@@ -18,10 +18,14 @@ import {
   ChevronLeft,
   ChevronRight,
   ZoomIn,
+  Calculator,
+  LayoutDashboard,
+  ShieldCheck,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { EMICalculator } from "@/components/emi-calculator"
 import { Separator } from "@/components/ui/separator"
 import { useProperties } from "@/lib/property-context"
 import { formatPrice } from "@/lib/data"
@@ -33,19 +37,19 @@ import { useCallback, useEffect } from "react"
 import { toast } from "sonner"
 
 const statusColors: Record<string, string> = {
-  available: "bg-emerald-600 text-white",
+  available: "bg-primary text-white",
   sold: "bg-red-500 text-white",
-  upcoming: "bg-amber-500 text-white",
+  upcoming: "bg-primary text-white",
 }
 
 const typeColors: Record<string, string> = {
   plot: "bg-sky-100 text-sky-800",
   apartment: "bg-violet-100 text-violet-800",
   villa: "bg-rose-100 text-rose-800",
-  farmhouse: "bg-amber-100 text-amber-800",
+  farmhouse: "bg-primary/10 text-primary",
   agriculture_land: "bg-lime-100 text-lime-800",
-  rent: "bg-teal-100 text-teal-800",
-  commercial: "bg-emerald-100 text-emerald-800",
+  rent: "bg-slate-100 text-slate-700",
+  commercial: "bg-primary/10 text-primary",
   independent_house: "bg-orange-100 text-orange-800",
 }
 
@@ -54,11 +58,14 @@ import { useAdminAuth } from "@/lib/admin-auth"
 export function PropertyDetailClient({ propertyId }: { propertyId: string }) {
   const { getProperty } = useProperties()
   const property = getProperty(propertyId)
-  const { authenticatedFetch } = useAdminAuth()
+  const { user, authenticatedFetch } = useAdminAuth()
+  const isAdmin = user?.role === "admin"
   const [selectedImage, setSelectedImage] = useState(0)
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [lightboxIndex, setLightboxIndex] = useState(0)
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true })
+  const [adminContact, setAdminContact] = useState<{ ownerName?: string; ownerPhone?: string; ownerEmail?: string } | null>(null)
+  const [isLoadingAdminContact, setIsLoadingAdminContact] = useState(false)
   
   const [isInterested, setIsInterested] = useState(false)
   const [isSubmittingInterest, setIsSubmittingInterest] = useState(false)
@@ -81,6 +88,27 @@ export function PropertyDetailClient({ propertyId }: { propertyId: string }) {
   const scrollTo = useCallback((index: number) => {
     if (emblaApi) emblaApi.scrollTo(index)
   }, [emblaApi])
+
+  // Fetch contact details automatically if admin
+  useEffect(() => {
+    if (isAdmin && propertyId) {
+      const fetchAdminContact = async () => {
+        setIsLoadingAdminContact(true)
+        try {
+          const res = await authenticatedFetch(`/api/properties/${propertyId}/contact`)
+          const data = await res.json()
+          if (data.success) {
+            setAdminContact(data.contact)
+          }
+        } catch (error) {
+          console.error("Admin contact fetch error:", error)
+        } finally {
+          setIsLoadingAdminContact(false)
+        }
+      }
+      fetchAdminContact()
+    }
+  }, [isAdmin, propertyId, authenticatedFetch])
 
   const handleExpressInterest = async () => {
     if (!property) return
@@ -376,11 +404,39 @@ export function PropertyDetailClient({ propertyId }: { propertyId: string }) {
               {/* Price Card */}
               <Card className="border-border">
                 <CardContent className="p-6">
+                  {/* Admin Controls */}
+                  {isAdmin && (
+                    <div className="mb-6 space-y-3 rounded-xl border border-primary/20 bg-primary/5 p-4 shadow-sm">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                           <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+                           <span className="text-[10px] font-black uppercase tracking-widest text-primary">Admin Access</span>
+                        </div>
+                        <Badge variant="outline" className="text-[9px] font-bold h-5 border-primary/20 bg-white shadow-sm">Superuser</Badge>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 mt-2">
+                        <Button variant="default" size="sm" className="h-8 text-[11px] font-bold gap-1.5 shadow-sm" asChild>
+                          <Link href={`/admin/properties`}>
+                            <LayoutDashboard className="h-3.5 w-3.5" />
+                            Manage
+                          </Link>
+                        </Button>
+                        <Button variant="outline" size="sm" className="h-8 text-[11px] font-bold gap-1.5 border-primary/20 hover:bg-white" disabled>
+                           <ShieldCheck className="h-3.5 w-3.5 text-primary" />
+                           Verified
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
                   <p className="mb-1 text-sm text-muted-foreground">
                     {property.type === "rent" ? "Monthly Rent" : "Price"}
                   </p>
                   <p className="mb-1 font-serif text-3xl font-bold text-primary">
-                    {"Rs. "}{formatPrice(property.type === "rent" && property.monthlyRent ? property.monthlyRent : property.price)}
+                    {"Rs. "}{formatPrice(
+                      property.type === "rent" && property.monthlyRent ? property.monthlyRent : property.price,
+                      property.maxPrice
+                    )}
                   </p>
                   <p className="text-xs text-muted-foreground">
                     {property.priceUnit === "total" ? "Total Price" : `Per ${property.priceUnit}`}
@@ -402,6 +458,34 @@ export function PropertyDetailClient({ propertyId }: { propertyId: string }) {
                       )}
                     </div>
                   )}
+
+                  {/* Admin Auto-Reveal Contact */}
+                  {isAdmin && (adminContact || isLoadingAdminContact) && (
+                    <div className="mt-6 space-y-3 rounded-xl border border-emerald-100 bg-emerald-50/50 p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Phone className="h-3.5 w-3.5 text-emerald-600" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-emerald-700">Owner Information (Admin View)</span>
+                      </div>
+                      {isLoadingAdminContact ? (
+                        <div className="h-4 w-32 bg-emerald-100 animate-pulse rounded" />
+                      ) : (
+                        <div className="space-y-2">
+                          <p className="text-sm font-bold text-slate-900">{adminContact?.ownerName || "No Name Provided"}</p>
+                          <div className="space-y-1">
+                            <p className="text-xs text-muted-foreground flex items-center gap-2">
+                               <Phone className="h-3 w-3" />
+                               {adminContact?.ownerPhone || "No Phone"}
+                            </p>
+                            <p className="text-xs text-muted-foreground flex items-center gap-2">
+                               <Mail className="h-3 w-3" />
+                               {adminContact?.ownerEmail || "No Email"}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   <Separator className="my-4" />
                   {property.brochureUrl && (
                     <Button className="w-full gap-2" size="lg" asChild>
@@ -472,7 +556,7 @@ export function PropertyDetailClient({ propertyId }: { propertyId: string }) {
                     {property.gatedCommunity && (
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Gated Community</span>
-                        <span className="font-medium text-emerald-600">Yes</span>
+                        <span className="font-medium text-primary">Yes</span>
                       </div>
                     )}
                     {property.plotDimensions && (
@@ -496,19 +580,19 @@ export function PropertyDetailClient({ propertyId }: { propertyId: string }) {
                     {property.waterSource && (
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Water Source</span>
-                        <span className="font-medium text-emerald-600">Available</span>
+                        <span className="font-medium text-primary">Available</span>
                       </div>
                     )}
                     {property.electricityStatus && (
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Electricity</span>
-                        <span className="font-medium text-emerald-600">Available</span>
+                        <span className="font-medium text-primary">Available</span>
                       </div>
                     )}
                     {property.isVerified && (
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Verified</span>
-                        <Badge className="bg-emerald-100 text-emerald-800 text-xs">✓ Verified</Badge>
+                        <Badge className="bg-primary/10 text-primary text-xs">✓ Verified</Badge>
                       </div>
                     )}
                     {property.propertyAge && (
@@ -540,7 +624,7 @@ export function PropertyDetailClient({ propertyId }: { propertyId: string }) {
                   <CardContent className="p-6 transition-all">
                     {showInterestSuccess ? (
                       <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2">
-                        <div className="flex items-center gap-3 p-3 bg-emerald-50 text-emerald-800 rounded-xl border border-emerald-100">
+                        <div className="flex items-center gap-3 p-3 bg-primary/5 text-primary rounded-xl border border-primary/10">
                           <CheckCircle2 className="h-5 w-5 shrink-0" />
                           <p className="text-sm font-medium">Your interest has been notified!</p>
                         </div>
@@ -548,9 +632,9 @@ export function PropertyDetailClient({ propertyId }: { propertyId: string }) {
                           <div className="space-y-3 pt-2">
                             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Direct Contact Information</p>
                             <div className="space-y-2">
-                              {property.ownerName && <div className="flex items-center gap-3 text-sm font-medium"><div className="h-8 w-8 flex items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 font-bold">{property.ownerName[0]}</div>{property.ownerName}</div>}
-                              {property.ownerPhone && <Button variant="ghost" className="w-full justify-start gap-3 h-11 px-3 hover:bg-emerald-50 text-emerald-700" asChild><a href={`tel:${property.ownerPhone}`}><Phone className="h-4 w-4" />{property.ownerPhone}</a></Button>}
-                              {property.ownerEmail && <Button variant="ghost" className="w-full justify-start gap-3 h-11 px-3 hover:bg-emerald-50 text-emerald-700" asChild><a href={`mailto:${property.ownerEmail}`}><Mail className="h-4 w-4" />{property.ownerEmail}</a></Button>}
+                              {property.ownerName && <div className="flex items-center gap-3 text-sm font-medium"><div className="h-8 w-8 flex items-center justify-center rounded-lg bg-primary/10 text-primary font-bold">{property.ownerName[0]}</div>{property.ownerName}</div>}
+                              {property.ownerPhone && <Button variant="ghost" className="w-full justify-start gap-3 h-11 px-3 hover:bg-primary/5 text-primary" asChild><a href={`tel:${property.ownerPhone}`}><Phone className="h-4 w-4" />{property.ownerPhone}</a></Button>}
+                              {property.ownerEmail && <Button variant="ghost" className="w-full justify-start gap-3 h-11 px-3 hover:bg-primary/5 text-primary" asChild><a href={`mailto:${property.ownerEmail}`}><Mail className="h-4 w-4" />{property.ownerEmail}</a></Button>}
                             </div>
                           </div>
                         )}
@@ -578,6 +662,26 @@ export function PropertyDetailClient({ propertyId }: { propertyId: string }) {
                         </p>
                       </div>
                     )}
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* EMI Calculator Card */}
+              {property.type !== "rent" && (
+                <Card className="border-border overflow-hidden">
+                  <CardHeader className="bg-secondary/30 pb-4">
+                    <CardTitle className="font-serif text-lg flex items-center gap-2">
+                      <Calculator className="h-4 w-4 text-primary" />
+                      Home Loan EMI
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-6">
+                    <EMICalculator compact initialAmount={Math.round(property.price * 0.8)} />
+                    <div className="mt-4 text-center">
+                       <Button variant="link" size="sm" className="text-xs text-primary font-bold" asChild>
+                          <Link href="/tools/emi">Full Calculator & Charts →</Link>
+                       </Button>
+                    </div>
                   </CardContent>
                 </Card>
               )}

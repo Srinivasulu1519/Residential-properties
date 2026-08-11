@@ -9,6 +9,8 @@ function mapProperty(p: any): Property {
     ...p,
     type: p.type.toLowerCase() as any,
     status: p.status.toLowerCase() as any,
+    price: p.price,
+    maxPrice: p.maxPrice ?? undefined,
     fullAddress: p.fullAddress,
     location: p.location || undefined,
     bedrooms: p.bedrooms ?? undefined,

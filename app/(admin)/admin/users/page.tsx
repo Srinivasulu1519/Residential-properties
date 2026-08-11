@@ -294,8 +294,8 @@ export default function AdminUsersPage() {
                 </Card>
                 <Card className="border-border">
                     <CardContent className="flex items-center gap-4 p-5">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100">
-                            <Shield className="h-6 w-6 text-amber-700" />
+                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+                            <Shield className="h-6 w-6 text-primary" />
                         </div>
                         <div>
                             <p className="text-2xl font-bold text-foreground">{admins.length}</p>
@@ -319,21 +319,21 @@ export default function AdminUsersPage() {
             {/* Administrators Table */}
             <div className="mb-8">
                 <div className="mb-4 flex items-center gap-2">
-                    <Shield className="h-5 w-5 text-amber-600" />
+                    <Shield className="h-5 w-5 text-primary" />
                     <h2 className="font-serif text-xl font-semibold text-foreground">Administrators</h2>
-                    <Badge variant="outline" className="ml-2 bg-amber-50 text-amber-700 border-amber-200">System Management</Badge>
+                    <Badge variant="outline" className="ml-2 bg-primary/5 text-primary border-primary/20">System Management</Badge>
                 </div>
                 {loading ? (
                     <div className="flex items-center justify-center py-20">
                         <Loader2 className="h-8 w-8 animate-spin text-primary" />
                     </div>
                 ) : (
-                    <Card className="border-border overflow-hidden ring-1 ring-amber-100">
+                    <Card className="border-border overflow-hidden ring-1 ring-indigo-100">
                         <CardContent className="p-0">
                             <div className="overflow-x-auto">
                                 <table className="w-full text-sm">
                                     <thead>
-                                        <tr className="border-b border-border bg-amber-50/50">
+                                        <tr className="border-b border-border bg-primary/5/50">
                                             <th className="px-6 py-4 text-left font-medium text-muted-foreground">Admin Name</th>
                                             <th className="px-6 py-4 text-left font-medium text-muted-foreground">Email Address</th>
                                             <th className="px-6 py-4 text-left font-medium text-muted-foreground">Created</th>
@@ -342,10 +342,10 @@ export default function AdminUsersPage() {
                                     </thead>
                                     <tbody>
                                         {admins.map((u) => (
-                                            <tr key={u.id} className="border-b border-border last:border-0 hover:bg-amber-50/20 transition-colors">
+                                            <tr key={u.id} className="border-b border-border last:border-0 hover:bg-primary/5/20 transition-colors">
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 text-amber-700 font-bold text-xs">
+                                                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-xs">
                                                             {u.name.charAt(0)}
                                                         </div>
                                                         <span className="font-medium text-foreground">{u.name}</span>
@@ -360,7 +360,7 @@ export default function AdminUsersPage() {
                                                         <Button 
                                                             variant="ghost" 
                                                             size="icon" 
-                                                            className="h-9 w-9 text-muted-foreground hover:text-amber-600 hover:bg-amber-100/50"
+                                                            className="h-9 w-9 text-muted-foreground hover:text-primary hover:bg-primary/10/50"
                                                             title="Edit Admin"
                                                             onClick={() => {
                                                                 setEditingUserId(u.id)

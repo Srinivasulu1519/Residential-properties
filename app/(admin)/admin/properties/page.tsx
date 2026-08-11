@@ -278,7 +278,7 @@ export default function AdminPropertiesPage() {
                       </Badge>
                     </TableCell>
                     <TableCell className="whitespace-nowrap">
-                      {"Rs. "}{formatPrice(property.price)}
+                      {"Rs. "}{formatPrice(property.price, property.maxPrice)}
                     </TableCell>
                     <TableCell className="max-w-[120px]">
                       <span className="line-clamp-1 text-muted-foreground">
@@ -298,10 +298,10 @@ export default function AdminPropertiesPage() {
                       <div className="flex flex-col gap-1">
                         <Badge
                           className={`text-xs w-fit ${property.status === "available"
-                            ? "bg-emerald-100 text-emerald-800"
+                            ? "bg-primary/10 text-primary"
                             : property.status === "sold"
                               ? "bg-red-100 text-red-800"
-                              : "bg-amber-100 text-amber-800"
+                              : "bg-primary/10 text-primary"
                             }`}
                         >
                           {property.status}

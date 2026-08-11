@@ -112,21 +112,21 @@ export default function SubscribersPage() {
 
                 {/* Stats Cards */}
                 <div className="grid gap-6 sm:grid-cols-3 mb-8">
-                    <Card className="border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50">
+                    <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-slate-50">
                         <CardContent className="p-6">
                             <div className="flex items-center gap-4">
-                                <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg">
+                                <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-yellow-600 flex items-center justify-center shadow-lg">
                                     <Crown className="h-6 w-6 text-white" />
                                 </div>
                                 <div>
-                                    <p className="text-2xl font-bold text-emerald-900">{stats.totalPremium}</p>
-                                    <p className="text-sm text-emerald-600">Premium Subscribers</p>
+                                    <p className="text-2xl font-bold text-slate-900">{stats.totalPremium}</p>
+                                    <p className="text-sm text-primary">Premium Subscribers</p>
                                 </div>
                             </div>
                         </CardContent>
                     </Card>
 
-                    <Card className="border-blue-200 bg-gradient-to-br from-blue-50 to-sky-50">
+                    <Card className="border-slate-200 bg-gradient-to-br from-blue-50 to-sky-50">
                         <CardContent className="p-6">
                             <div className="flex items-center gap-4">
                                 <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-blue-500 to-sky-600 flex items-center justify-center shadow-lg">
@@ -134,7 +134,7 @@ export default function SubscribersPage() {
                                 </div>
                                 <div>
                                     <p className="text-2xl font-bold text-blue-900">{stats.totalFree}</p>
-                                    <p className="text-sm text-blue-600">Free Trial Users</p>
+                                    <p className="text-sm text-primary">Free Trial Users</p>
                                 </div>
                             </div>
                         </CardContent>
@@ -171,7 +171,7 @@ export default function SubscribersPage() {
                         <Card>
                             <CardHeader>
                                 <CardTitle className="text-lg font-serif flex items-center gap-2">
-                                    <Crown className="h-5 w-5 text-emerald-600" />
+                                    <Crown className="h-5 w-5 text-primary" />
                                     Premium Subscribers
                                 </CardTitle>
                             </CardHeader>
@@ -220,7 +220,7 @@ export default function SubscribersPage() {
                                                         </div>
                                                     </TableCell>
                                                     <TableCell>
-                                                        <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 gap-1">
+                                                        <Badge className="bg-primary/10 text-primary border-primary/20 gap-1">
                                                             <CheckCircle2 className="h-3 w-3" /> Premium
                                                         </Badge>
                                                     </TableCell>
@@ -243,7 +243,7 @@ export default function SubscribersPage() {
                         <Card>
                             <CardHeader>
                                 <CardTitle className="text-lg font-serif flex items-center gap-2">
-                                    <Clock className="h-5 w-5 text-blue-600" />
+                                    <Clock className="h-5 w-5 text-primary" />
                                     Free Trial Users
                                 </CardTitle>
                             </CardHeader>
@@ -293,8 +293,8 @@ export default function SubscribersPage() {
                                                         ) : u.daysRemaining !== null ? (
                                                             <Badge className={`gap-1 ${
                                                                 u.daysRemaining <= 7
-                                                                    ? "bg-amber-100 text-amber-700 border-amber-200"
-                                                                    : "bg-blue-100 text-blue-700 border-blue-200"
+                                                                    ? "bg-primary/10 text-primary border-primary/20"
+                                                                    : "bg-slate-100 text-slate-600 border-slate-200"
                                                             }`}>
                                                                 <Clock className="h-3 w-3" />
                                                                 {u.daysRemaining} days left

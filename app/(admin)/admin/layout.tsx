@@ -39,7 +39,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
           <header className="flex h-16 shrink-0 items-center border-b bg-card px-6 z-10">
             <Breadcrumbs />
           </header>
-          <main className="flex-1 overflow-y-auto overflow-x-hidden [scrollbar-gutter:stable] bg-muted/10">
+          <main className="flex-1 overflow-y-auto overflow-x-hidden [scrollbar-gutter:stable] bg-slate-50">
             <div className="mx-auto min-h-full max-w-7xl px-6 py-8">
               {children}
             </div>

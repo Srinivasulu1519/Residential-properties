@@ -66,6 +66,7 @@ export function PropertyForm({ property, mode }: PropertyFormProps) {
   const [title, setTitle] = useState(property?.title || "")
   const [type, setType] = useState<PropertyType>((property?.type?.toLowerCase() as PropertyType) || "plot")
   const [price, setPrice] = useState(property?.price?.toString() || "")
+  const [maxPrice, setMaxPrice] = useState((property as any)?.maxPrice?.toString() || "")
   const [priceUnit, setPriceUnit] = useState(property?.priceUnit || "total")
   const [fullAddress, setFullAddress] = useState(property?.fullAddress || "")
   const [location, setLocation] = useState(property?.location || "")
@@ -113,6 +114,9 @@ export function PropertyForm({ property, mode }: PropertyFormProps) {
     if (!area || isNaN(Number(area)) || Number(area) <= 0)
       errs.area = "Valid area is required"
     if (!description.trim()) errs.description = "Description is required"
+    if (maxPrice && !isNaN(Number(maxPrice)) && Number(maxPrice) <= Number(price)) {
+      errs.maxPrice = "Max price must be greater than min price"
+    }
     setErrors(errs)
     return Object.keys(errs).length === 0
   }
@@ -175,6 +179,7 @@ export function PropertyForm({ property, mode }: PropertyFormProps) {
         title: title.trim(),
         type,
         price: Number(price),
+        maxPrice: maxPrice ? Number(maxPrice) : undefined,
         priceUnit,
         fullAddress: fullAddress.trim(),
         location: location.trim() || undefined,
@@ -356,7 +361,7 @@ export function PropertyForm({ property, mode }: PropertyFormProps) {
               <CardContent className="grid gap-6 pt-8">
                 <div className="grid gap-6 sm:grid-cols-2">
                   <div className="space-y-2.5">
-                    <Label htmlFor="price" className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground/70">Price (Rs.) <span className="text-destructive">*</span></Label>
+                    <Label htmlFor="price" className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground/70">Min Price (Rs.) <span className="text-destructive">*</span></Label>
                     <div className="relative">
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">₹</span>
                       <Input
@@ -373,6 +378,27 @@ export function PropertyForm({ property, mode }: PropertyFormProps) {
                     )}
                     {errors.price && <p className="text-xs font-medium text-destructive mt-1">{errors.price}</p>}
                   </div>
+                  <div className="space-y-2.5">
+                    <Label htmlFor="maxPrice" className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground/70">Max Price (Optional)</Label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">₹</span>
+                      <Input
+                        id="maxPrice"
+                        type="number"
+                        className="h-12 bg-muted/30 pl-8 font-mono text-lg transition-all focus:bg-background"
+                        placeholder="30000000"
+                        value={maxPrice}
+                        onChange={(e) => setMaxPrice(e.target.value)}
+                      />
+                    </div>
+                    {maxPrice && !isNaN(Number(maxPrice)) && (
+                      <p className="mt-1.5 text-[11px] font-bold text-primary/70 uppercase tracking-widest pl-1">≈ {formatPrice(Number(maxPrice))}</p>
+                    )}
+                    {errors.maxPrice && <p className="text-xs font-medium text-destructive mt-1">{errors.maxPrice}</p>}
+                  </div>
+                </div>
+
+                <div className="grid gap-6 sm:grid-cols-2">
                   <div className="space-y-2.5">
                     <Label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground/70">Price Unit</Label>
                     <Select value={priceUnit} onValueChange={setPriceUnit}>
@@ -577,12 +603,12 @@ export function PropertyForm({ property, mode }: PropertyFormProps) {
 
           {/* Section 4: Type-Specific Details */}
           <section className="space-y-6">
-            <div className="flex items-center gap-3 border-b border-teal-200 pb-3">
-              <div className="h-6 w-1 rounded-full bg-teal-500" />
+            <div className="flex items-center gap-3 border-b border-slate-200 pb-3">
+              <div className="h-6 w-1 rounded-full bg-primary" />
               <h2 className="text-lg font-bold tracking-tight text-foreground/80">{PROPERTY_TYPES.find(t => t.value === type)?.label || type} Details</h2>
-              <span className="text-xs text-teal-600 bg-teal-50 px-2 py-0.5 rounded-full font-medium">Extra context</span>
+              <span className="text-xs text-primary bg-slate-50 px-2 py-0.5 rounded-full font-medium">Extra context</span>
             </div>
-            <Card className="border-teal-100 bg-gradient-to-br from-teal-50/10 to-white shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)]">
+            <Card className="border-slate-100 bg-gradient-to-br from-yellow-50/10 to-white shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)]">
               <CardContent className="grid gap-6 pt-8">
                 {type === "plot" && (
                   <div className="grid gap-6 sm:grid-cols-3">
@@ -815,7 +841,7 @@ export function PropertyForm({ property, mode }: PropertyFormProps) {
           {/* Section 6: Contact Information */}
           <section className="space-y-6">
             <div className="flex items-center gap-3 border-b border-border/60 pb-3">
-              <div className="h-6 w-1 rounded-full bg-emerald-500" />
+              <div className="h-6 w-1 rounded-full bg-primary" />
               <h2 className="text-lg font-bold tracking-tight text-foreground/80">Owner / Contact Details</h2>
             </div>
             <Card className="border-none bg-card shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)]">

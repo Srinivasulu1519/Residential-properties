@@ -4,7 +4,7 @@ import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useState, useRef, useEffect } from "react"
 import {
-  Menu, X, LogOut, LayoutDashboard, User, PlusCircle, ChevronDown,
+  Menu, X, LogOut, LayoutDashboard, User, PlusCircle, ChevronDown, Calculator,
   LandPlot, Building2, Home, Warehouse, Tractor, Key, Store, Castle, Sparkles
 } from "lucide-react"
 import { PropVistaLogo } from "@/components/propvista-logo"
@@ -16,10 +16,10 @@ const PROPERTY_TYPES = [
   { value: "plot", label: "Plots", icon: LandPlot, color: "text-sky-600", bg: "bg-sky-50", border: "border-sky-200" },
   { value: "apartment", label: "Apartments", icon: Building2, color: "text-violet-600", bg: "bg-violet-50", border: "border-violet-200" },
   { value: "villa", label: "Villas", icon: Castle, color: "text-rose-600", bg: "bg-rose-50", border: "border-rose-200" },
-  { value: "farmhouse", label: "Farmhouse", icon: Home, color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200" },
+  { value: "farmhouse", label: "Farmhouse", icon: Home, color: "text-primary", bg: "bg-primary/5", border: "border-primary/20" },
   { value: "agriculture_land", label: "Agriculture Land", icon: Tractor, color: "text-green-600", bg: "bg-green-50", border: "border-green-200" },
-  { value: "rent", label: "Rent", icon: Key, color: "text-teal-600", bg: "bg-teal-50", border: "border-teal-200" },
-  { value: "commercial", label: "Commercial", icon: Store, color: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-200" },
+  { value: "rent", label: "Rent", icon: Key, color: "text-primary", bg: "bg-slate-50", border: "border-slate-200" },
+  { value: "commercial", label: "Commercial", icon: Store, color: "text-primary", bg: "bg-primary/5", border: "border-primary/20" },
   { value: "independent_house", label: "Independent House", icon: Warehouse, color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-200" },
 ]
 
@@ -118,7 +118,7 @@ export function SiteHeader() {
               <div className="absolute left-1/2 top-full pt-2 -translate-x-1/2 z-50">
                 <div className="w-[520px] rounded-xl border border-border bg-background shadow-xl shadow-black/10 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
                   {/* Header */}
-                  <div className="bg-gradient-to-r from-slate-900 to-emerald-900 px-5 py-3 flex items-center justify-between">
+                  <div className="bg-primary px-5 py-3 flex items-center justify-between">
                     <div>
                       <p className="text-white font-semibold text-sm">Browse Properties</p>
                       <p className="text-white/50 text-xs">Find your perfect property by type</p>
@@ -126,7 +126,7 @@ export function SiteHeader() {
                     <Link
                       href="/properties"
                       onClick={() => setMegaOpen(false)}
-                      className="text-xs text-emerald-300 hover:text-emerald-200 font-medium transition-colors"
+                      className="text-xs text-emerald-100 hover:text-white font-medium transition-colors"
                     >
                       View All →
                     </Link>
@@ -168,6 +168,17 @@ export function SiteHeader() {
               </div>
             )}
           </div>
+
+          <Link
+            href="/tools/emi"
+            className={cn(
+              "flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-secondary",
+              pathname === "/tools/emi" ? "bg-secondary text-secondary-foreground" : "text-muted-foreground"
+            )}
+          >
+            <Calculator className="h-4 w-4" />
+            EMI Calculator
+          </Link>
         </nav>
 
         {/* ========== RIGHT SIDE ========== */}
@@ -175,7 +186,7 @@ export function SiteHeader() {
           {/* Post Property - Always Visible */}
           <Link
             href={isAuthenticated ? "/post-property" : "/auth/register"}
-            className="relative flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-500 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-emerald-500/20 transition-all hover:shadow-lg hover:shadow-emerald-500/30 hover:-translate-y-0.5"
+            className="relative flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white shadow-md shadow-primary/20 transition-all hover:shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5"
           >
             <PlusCircle className="h-4 w-4" />
             Post Property
@@ -245,6 +256,19 @@ export function SiteHeader() {
               Home
             </Link>
             <Link
+              href="/tools/emi"
+              onClick={() => setMobileOpen(false)}
+              className={cn(
+                "rounded-md px-3 py-2.5 text-sm font-medium transition-colors hover:bg-secondary",
+                pathname === "/tools/emi" ? "bg-secondary text-secondary-foreground" : "text-muted-foreground"
+              )}
+            >
+              <div className="flex items-center gap-2">
+                <Calculator className="h-4 w-4" />
+                EMI Calculator
+              </div>
+            </Link>
+            <Link
               href="/properties"
               onClick={() => setMobileOpen(false)}
               className={cn(
@@ -284,7 +308,7 @@ export function SiteHeader() {
               <Link
                 href={isAuthenticated ? "/post-property" : "/auth/register"}
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-500 px-4 py-2.5 text-sm font-semibold text-white"
+                className="flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white"
               >
                 <PlusCircle className="h-4 w-4" />
                 Post Property

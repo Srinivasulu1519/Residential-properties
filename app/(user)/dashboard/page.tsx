@@ -249,7 +249,7 @@ export default function UserDashboardPage() {
 
     const handleDeleteProperty = async (propertyId: string) => {
         if (!confirm("Are you sure you want to delete this property? This action cannot be undone.")) return
-        
+
         setIsDeleting(propertyId)
         try {
             const res = await authenticatedFetch("/api/user/my-properties", {
@@ -338,19 +338,19 @@ export default function UserDashboardPage() {
             label: "Search History",
             value: searchCount,
             icon: Search,
-            gradient: "from-teal-500 to-emerald-600",
-            bg: "bg-gradient-to-br from-teal-50 to-emerald-50",
-            iconBg: "bg-gradient-to-br from-teal-500 to-emerald-600",
-            border: "border-teal-100"
+            gradient: "from-yellow-500 to-primary",
+            bg: "bg-gradient-to-br from-yellow-50 to-primary/5",
+            iconBg: "bg-gradient-to-br from-yellow-500 to-primary",
+            border: "border-slate-100"
         },
         {
             label: "Recent Activity",
             value: activityCount,
             icon: TrendingUp,
-            gradient: "from-amber-500 to-orange-600",
-            bg: "bg-gradient-to-br from-amber-50 to-orange-50",
-            iconBg: "bg-gradient-to-br from-amber-500 to-orange-600",
-            border: "border-amber-100"
+            gradient: "from-primary to-slate-800",
+            bg: "bg-gradient-to-br from-primary/5 to-slate-50",
+            iconBg: "bg-gradient-to-br from-primary to-slate-800",
+            border: "border-primary/10"
         },
     ]
 
@@ -359,8 +359,8 @@ export default function UserDashboardPage() {
         let color = "text-slate-500"
         let bg = "bg-slate-100"
         if (act.type === "heart") { Icon = Heart; color = "text-rose-500"; bg = "bg-rose-50" }
-        if (act.type === "search") { Icon = Search; color = "text-teal-500"; bg = "bg-teal-50" }
-        if (act.type === "account") { Icon = UserIcon; color = "text-emerald-500"; bg = "bg-emerald-50" }
+        if (act.type === "search") { Icon = Search; color = "text-slate-2000"; bg = "bg-slate-50" }
+        if (act.type === "account") { Icon = UserIcon; color = "text-primary"; bg = "bg-primary/5" }
 
         const date = new Date(act.date)
         const diffDays = Math.floor((new Date().getTime() - date.getTime()) / (1000 * 3600 * 24))
@@ -398,12 +398,12 @@ export default function UserDashboardPage() {
                                 <div className="flex flex-col md:flex-row gap-6 items-center md:items-start flex-1">
                                     {/* Avatar with glow */}
                                     <div className="relative group">
-                                        <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-emerald-400 to-teal-500 opacity-60 blur-md group-hover:opacity-80 transition-opacity duration-500" />
+                                        <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-emerald-400 to-primary opacity-60 blur-md group-hover:opacity-80 transition-opacity duration-500" />
                                         <Avatar className="relative h-28 w-28 border-[4px] border-white/20 shadow-2xl transition-transform duration-500 group-hover:scale-105">
                                             <AvatarImage src={`https://api.dicebear.com/7.x/initials/svg?seed=${user.name}&backgroundColor=0d9488,059669,0891b2&textColor=ffffff&fontSize=40`} />
-                                            <AvatarFallback className="bg-emerald-600 text-white text-3xl font-bold">{user.name.charAt(0)}</AvatarFallback>
+                                            <AvatarFallback className="bg-primary text-white text-3xl font-bold">{user.name.charAt(0)}</AvatarFallback>
                                         </Avatar>
-                                        <div className="absolute -bottom-1 -right-1 h-8 w-8 rounded-full bg-emerald-500 flex items-center justify-center border-2 border-white/20 shadow-lg">
+                                        <div className="absolute -bottom-1 -right-1 h-8 w-8 rounded-full bg-primary flex items-center justify-center border-2 border-white/20 shadow-lg">
                                             <Sparkles className="h-4 w-4 text-white" />
                                         </div>
                                     </div>
@@ -420,20 +420,20 @@ export default function UserDashboardPage() {
                                                         Admin
                                                     </Badge>
                                                 ) : user.subscriptionActive ? (
-                                                    <Badge className="w-fit bg-emerald-500/20 text-emerald-300 border-emerald-500/30 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest backdrop-blur-sm">
+                                                    <Badge className="w-fit bg-primary/20 text-emerald-100 border-primary/50/30 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest backdrop-blur-sm">
                                                         Premium Member
                                                     </Badge>
                                                 ) : (
-                                                    <Badge className="w-fit bg-amber-500/20 text-amber-300 border-amber-500/30 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest backdrop-blur-sm">
+                                                    <Badge className="w-fit bg-primary/20 text-emerald-100 border-primary/50/30 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest backdrop-blur-sm">
                                                         Free Trial
                                                     </Badge>
                                                 )}
                                             </div>
                                             <p className="text-base text-white/60 max-w-xl leading-relaxed">
                                                 Welcome to your personal dashboard. You have{" "}
-                                                <span className="text-emerald-400 font-semibold">{stats?.savedProperties ?? 0} saved properties</span>
+                                                <span className="text-primary/80 font-semibold">{stats?.savedProperties ?? 0} saved properties</span>
                                                 {" "}and{" "}
-                                                <span className="text-emerald-400 font-semibold">{stats?.searchHistoryCount ?? 0} searches</span>.
+                                                <span className="text-primary/80 font-semibold">{stats?.searchHistoryCount ?? 0} searches</span>.
                                             </p>
                                         </div>
                                         {stats?.memberSince && (
@@ -448,7 +448,7 @@ export default function UserDashboardPage() {
                                 {/* Action buttons */}
                                 <div className="flex gap-3 self-center md:self-start">
                                     {user.role !== "admin" && !user.subscriptionActive && (
-                                        <Button size="sm" onClick={handleUpgrade} disabled={isUpdating} className="bg-gradient-to-r from-amber-500 to-orange-600 text-white border-none hover:from-amber-600 hover:to-orange-700 shadow-lg">
+                                        <Button size="sm" onClick={handleUpgrade} disabled={isUpdating} className="bg-gradient-to-r from-primary to-slate-800 text-white border-none hover:from-primary hover:to-primary/90 shadow-lg">
                                             {isUpdating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4 mr-1.5" />}
                                             Upgrade to Premium
                                         </Button>
@@ -562,8 +562,8 @@ export default function UserDashboardPage() {
                                         </CardHeader>
                                         <CardContent className="p-0">
                                             <div className="p-8 text-center bg-white space-y-4">
-                                                <div className="mx-auto h-16 w-16 rounded-full bg-gradient-to-br from-emerald-50 to-teal-50 flex items-center justify-center">
-                                                    <Star className="h-8 w-8 text-emerald-400" />
+                                                <div className="mx-auto h-16 w-16 rounded-full bg-gradient-to-br from-primary/5 to-slate-50 flex items-center justify-center">
+                                                    <Star className="h-8 w-8 text-primary/80" />
                                                 </div>
                                                 <div className="max-w-xs mx-auto">
                                                     <p className="font-semibold text-slate-900">Start exploring to see recommendations</p>
@@ -579,9 +579,9 @@ export default function UserDashboardPage() {
                                     {/* Quick Action Cards */}
                                     <div className="grid gap-6 sm:grid-cols-2">
                                         <Card className="border-slate-200 hover:border-sky-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group cursor-pointer overflow-hidden relative">
-                                            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-sky-400 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-sky-400 to-primary opacity-0 group-hover:opacity-100 transition-opacity" />
                                             <CardContent className="p-6 flex flex-col items-center text-center gap-4">
-                                                <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-sky-500 to-teal-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                                                <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-sky-500 to-yellow-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
                                                     <Building2 className="h-8 w-8 text-white" />
                                                 </div>
                                                 <div>
@@ -594,17 +594,17 @@ export default function UserDashboardPage() {
                                             </CardContent>
                                         </Card>
 
-                                        <Card className="border-slate-200 hover:border-emerald-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group cursor-pointer overflow-hidden relative">
-                                            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        <Card className="border-slate-200 hover:border-primary/20 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group cursor-pointer overflow-hidden relative">
+                                            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-400 to-primary opacity-0 group-hover:opacity-100 transition-opacity" />
                                             <CardContent className="p-6 flex flex-col items-center text-center gap-4">
-                                                <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                                                <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary to-yellow-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
                                                     <Heart className="h-8 w-8 text-white" />
                                                 </div>
                                                 <div>
                                                     <h3 className="font-serif text-lg font-bold text-slate-900">Latest Drops</h3>
                                                     <p className="text-sm text-slate-500 mt-1 italic">New properties added today</p>
                                                 </div>
-                                                <Link href="/properties?status=available" className="text-emerald-600 text-sm font-semibold flex items-center gap-1 group-hover:underline">
+                                                <Link href="/properties?status=available" className="text-primary text-sm font-semibold flex items-center gap-1 group-hover:underline">
                                                     View Newest <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                                                 </Link>
                                             </CardContent>
@@ -648,7 +648,7 @@ export default function UserDashboardPage() {
                                                                 ) : (p as any).isExpired ? (
                                                                     <Badge variant="destructive" className="w-fit text-[10px] uppercase">Expired</Badge>
                                                                 ) : (
-                                                                    <Badge className="w-fit bg-emerald-500 text-white text-[10px] uppercase">{(p as any).daysRemaining} Days Left</Badge>
+                                                                    <Badge className="w-fit bg-primary text-white text-[10px] uppercase">{(p as any).daysRemaining} Days Left</Badge>
                                                                 )}
                                                             </div>
                                                         </div>
@@ -669,18 +669,18 @@ export default function UserDashboardPage() {
                                                                     <Button variant="outline" size="sm" asChild>
                                                                         <Link href={`/properties/edit/${p.id}`}>Edit</Link>
                                                                     </Button>
-                                                                    <Button 
-                                                                        variant="destructive" 
-                                                                        size="sm" 
+                                                                    <Button
+                                                                        variant="destructive"
+                                                                        size="sm"
                                                                         onClick={() => handleDeleteProperty(p.id)}
                                                                         disabled={isDeleting === p.id}
                                                                     >
                                                                         {isDeleting === p.id ? <Loader2 className="h-4 w-4 animate-spin mr-1.5" /> : null}
                                                                         Delete
                                                                     </Button>
-                                                                    <Button 
-                                                                        variant="secondary" 
-                                                                        size="sm" 
+                                                                    <Button
+                                                                        variant="secondary"
+                                                                        size="sm"
                                                                         className="bg-sky-50 text-sky-700 hover:bg-sky-100 border-none"
                                                                         onClick={() => handleViewLeads(p.id, p.title)}
                                                                     >
@@ -688,9 +688,9 @@ export default function UserDashboardPage() {
                                                                     </Button>
                                                                 </div>
                                                                 {(p as any).isExpired ? (
-                                                                    <Button size="sm" className="bg-amber-500 hover:bg-amber-600" onClick={() => handleRenew(p.id)}>Renew Listing</Button>
+                                                                    <Button size="sm" className="bg-primary hover:bg-primary" onClick={() => handleRenew(p.id)}>Renew Listing</Button>
                                                                 ) : (p as any).isInactive && (
-                                                                    <Button size="sm" className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white border-none shadow-md animate-bounce-subtle" onClick={handleUpgrade}>
+                                                                    <Button size="sm" className="bg-gradient-to-r from-primary to-slate-800 hover:from-primary hover:to-primary/90 text-white border-none shadow-md animate-bounce-subtle" onClick={handleUpgrade}>
                                                                         <Sparkles className="h-3.5 w-3.5 mr-1.5" />
                                                                         Upgrade to Activate
                                                                     </Button>
@@ -715,11 +715,11 @@ export default function UserDashboardPage() {
                                 <TabsContent value="my-leads" className="mt-6">
                                     <div className="flex justify-between items-center mb-6">
                                         <h3 className="text-lg font-bold font-serif">Interested Leads</h3>
-                                        <Badge className="bg-emerald-100 text-emerald-800 border-none px-3 py-1">
+                                        <Badge className="bg-primary/10 text-primary border-none px-3 py-1">
                                             {userLeads.length} Total Prospects
                                         </Badge>
                                     </div>
-                                    
+
                                     {isUserLeadsLoading ? (
                                         <div className="py-20 text-center">
                                             <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
@@ -732,25 +732,25 @@ export default function UserDashboardPage() {
                                                         <div className="flex flex-col md:flex-row">
                                                             {/* User Details */}
                                                             <div className="p-6 flex-1 flex items-center gap-4 bg-slate-50/50 border-b md:border-b-0 md:border-r border-slate-100">
-                                                                <Avatar className="h-14 w-14 border-2 border-white shadow-sm ring-2 ring-emerald-500/10">
+                                                                <Avatar className="h-14 w-14 border-2 border-white shadow-sm ring-2 ring-indigo-500/10">
                                                                     <AvatarImage src={`https://api.dicebear.com/7.x/initials/svg?seed=${lead.user.name}`} />
-                                                                    <AvatarFallback className="bg-emerald-600 text-white font-bold">{lead.user.name.charAt(0)}</AvatarFallback>
+                                                                    <AvatarFallback className="bg-primary text-white font-bold">{lead.user.name.charAt(0)}</AvatarFallback>
                                                                 </Avatar>
                                                                 <div className="space-y-1">
                                                                     <h4 className="text-lg font-bold text-slate-900 leading-none">{lead.user.name}</h4>
                                                                     <div className="flex flex-col gap-1.5 pt-1">
-                                                                        <div className="flex items-center text-xs text-slate-900 font-bold gap-2 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100 w-fit">
-                                                                            <Phone className="h-3 w-3 text-emerald-600" />
+                                                                        <div className="flex items-center text-xs text-slate-900 font-bold gap-2 bg-primary/5 px-2 py-0.5 rounded-full border border-primary/10 w-fit">
+                                                                            <Phone className="h-3 w-3 text-primary" />
                                                                             <span>{lead.user.phone}</span>
                                                                         </div>
                                                                         <div className="flex items-center text-xs text-slate-500 gap-2">
-                                                                            <Mail className="h-3 w-3 text-emerald-500" />
+                                                                            <Mail className="h-3 w-3 text-primary" />
                                                                             <span>{lead.user.email}</span>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            
+
                                                             {/* Property Context */}
                                                             <div className="p-6 flex-[1.5] bg-white flex flex-col justify-between">
                                                                 <div>
@@ -768,13 +768,13 @@ export default function UserDashboardPage() {
                                                                         {lead.property.city} · {lead.property.type.replace(/_/g, " ")}
                                                                     </div>
                                                                 </div>
-                                                                
+
                                                                 <div className="flex justify-between items-center pt-4 border-t border-slate-50">
                                                                     <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-semibold uppercase tracking-tight">
                                                                         <Calendar className="h-3 w-3" />
                                                                         Expressed on {new Date(lead.createdAt).toLocaleDateString()}
                                                                     </div>
-                                                                    <Button variant="ghost" size="sm" className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 gap-1.5" asChild>
+                                                                    <Button variant="ghost" size="sm" className="text-primary hover:text-primary hover:bg-primary/5 gap-1.5" asChild>
                                                                         <Link href={`/properties/${lead.property.id}`}>
                                                                             View Listing <ChevronRight className="h-4 w-4" />
                                                                         </Link>
@@ -829,8 +829,8 @@ export default function UserDashboardPage() {
                                                     {searchHistory.map((query: string, k: number) => (
                                                         <div key={k} className="flex items-center justify-between p-4 hover:bg-slate-50 transition-colors group">
                                                             <div className="flex items-center gap-3">
-                                                                <div className="h-9 w-9 rounded-full bg-gradient-to-br from-teal-50 to-emerald-50 flex items-center justify-center group-hover:from-teal-100 group-hover:to-emerald-100 transition-colors">
-                                                                    <Search className="h-4 w-4 text-teal-500" />
+                                                                <div className="h-9 w-9 rounded-full bg-gradient-to-br from-yellow-50 to-primary/5 flex items-center justify-center group-hover:from-yellow-100 group-hover:to-indigo-100 transition-colors">
+                                                                    <Search className="h-4 w-4 text-slate-2000" />
                                                                 </div>
                                                                 <p className="font-medium text-slate-700">{query}</p>
                                                             </div>
@@ -846,8 +846,8 @@ export default function UserDashboardPage() {
                                         </Card>
                                     ) : (
                                         <div className="py-20 text-center bg-white border border-dashed border-slate-300 rounded-xl">
-                                            <div className="mx-auto h-16 w-16 rounded-full bg-gradient-to-br from-teal-50 to-emerald-50 flex items-center justify-center mb-4">
-                                                <Search className="h-8 w-8 text-teal-300" />
+                                            <div className="mx-auto h-16 w-16 rounded-full bg-gradient-to-br from-yellow-50 to-primary/5 flex items-center justify-center mb-4">
+                                                <Search className="h-8 w-8 text-yellow-300" />
                                             </div>
                                             <p className="text-slate-500 font-medium">No search history yet.</p>
                                             <Button variant="link" className="text-primary mt-2" asChild>
@@ -881,8 +881,8 @@ export default function UserDashboardPage() {
                                         </div>
 
                                         <div className="flex items-start gap-3">
-                                            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-teal-50 to-emerald-100 flex items-center justify-center shrink-0">
-                                                <Mail className="h-4 w-4 text-teal-600" />
+                                            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-yellow-50 to-indigo-100 flex items-center justify-center shrink-0">
+                                                <Mail className="h-4 w-4 text-primary" />
                                             </div>
                                             <div>
                                                 <p className="text-xs font-semibold text-slate-400 uppercase tracking-tight">Email Address</p>
@@ -891,8 +891,8 @@ export default function UserDashboardPage() {
                                         </div>
 
                                         <div className="flex items-start gap-3">
-                                            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-100 flex items-center justify-center shrink-0">
-                                                <Phone className="h-4 w-4 text-emerald-600" />
+                                            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-primary/5 to-yellow-100 flex items-center justify-center shrink-0">
+                                                <Phone className="h-4 w-4 text-primary" />
                                             </div>
                                             <div>
                                                 <p className="text-xs font-semibold text-slate-400 uppercase tracking-tight">Phone Number</p>
@@ -906,8 +906,8 @@ export default function UserDashboardPage() {
 
                                         {stats?.memberSince && (
                                             <div className="flex items-start gap-3">
-                                                <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center shrink-0">
-                                                    <Calendar className="h-4 w-4 text-amber-600" />
+                                                <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-primary/5 to-orange-100 flex items-center justify-center shrink-0">
+                                                    <Calendar className="h-4 w-4 text-primary" />
                                                 </div>
                                                 <div>
                                                     <p className="text-xs font-semibold text-slate-400 uppercase tracking-tight">Member Since</p>
@@ -934,7 +934,7 @@ export default function UserDashboardPage() {
                                         Recent Activity
                                     </CardTitle>
                                     <div className="flex items-center gap-1.5">
-                                        <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                                        <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
                                         <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Live</span>
                                     </div>
                                 </CardHeader>
@@ -1007,8 +1007,8 @@ export default function UserDashboardPage() {
                                                         <div>
                                                             <p className="font-bold text-slate-900 text-sm">{lead.name}</p>
                                                             <div className="flex flex-col gap-0.5 mt-0.5">
-                                                                <p className="text-[10px] text-slate-900 font-bold flex items-center gap-1.5 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100 w-fit">
-                                                                    <Phone className="h-3 w-3 text-emerald-600" /> {lead.phone}
+                                                                <p className="text-[10px] text-slate-900 font-bold flex items-center gap-1.5 bg-primary/5 px-2 py-0.5 rounded-full border border-primary/10 w-fit">
+                                                                    <Phone className="h-3 w-3 text-primary" /> {lead.phone}
                                                                 </p>
                                                                 <p className="text-[10px] text-muted-foreground flex items-center gap-1.5">
                                                                     <Mail className="h-3 w-3" /> {lead.email}
@@ -1075,7 +1075,7 @@ export default function UserDashboardPage() {
                             </div>
                         )}
                     </div>
-                    
+
                     <div className="p-6 pt-0 mt-auto border-t border-slate-100 bg-white shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
                         <Button className="w-full mt-4" variant="outline" onClick={() => setIsLeadsModalOpen(false)}>
                             Close
@@ -1085,7 +1085,7 @@ export default function UserDashboardPage() {
             </Dialog>
 
             {/* Payment Modal */}
-            <PaymentModal 
+            <PaymentModal
                 isOpen={isPaymentModalOpen}
                 onClose={() => setIsPaymentModalOpen(false)}
                 onSuccess={onPaymentSuccess}

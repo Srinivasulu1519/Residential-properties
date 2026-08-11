@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 import { Building2, Lock, Eye, EyeOff, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -24,8 +25,10 @@ export default function ResetPasswordPage() {
 
     if (!token) {
         return (
-            <div className="flex min-h-screen items-center justify-center bg-secondary/30 px-4">
-                <Card className="w-full max-w-md border-border text-center p-6 space-y-4">
+            <div className="relative flex min-h-screen items-center justify-center">
+                <Image src="/images/auth-bg.png" alt="" fill className="object-cover" priority sizes="100vw" />
+                <div className="absolute inset-0 bg-gradient-to-br from-slate-900/80 via-slate-900/60 to-emerald-900/40" />
+                <Card className="relative z-10 w-full max-w-md border-white/10 bg-white/95 backdrop-blur-xl shadow-2xl text-center p-6 space-y-4">
                     <CardTitle className="text-xl">Invalid or Missing Token</CardTitle>
                     <p className="text-muted-foreground text-sm">You must use a valid password reset link from your email.</p>
                     <Link href="/auth/forgot-password">
@@ -75,8 +78,10 @@ export default function ResetPasswordPage() {
     }
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-secondary/30 px-4">
-            <Card className="w-full max-w-md border-border">
+        <div className="relative flex min-h-screen items-center justify-center">
+            <Image src="/images/auth-bg.png" alt="" fill className="object-cover" priority sizes="100vw" />
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-900/80 via-slate-900/60 to-emerald-900/40" />
+            <Card className="relative z-10 w-full max-w-md border-white/10 bg-white/95 backdrop-blur-xl shadow-2xl">
                 <CardHeader className="text-center">
                     <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-primary">
                         <Building2 className="h-7 w-7 text-primary-foreground" />

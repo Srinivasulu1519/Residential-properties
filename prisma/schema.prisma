@@ -137,6 +137,7 @@ model Property {
   brochureUrl       String?            @map("brochure_url")
   metadata          Json?              @default("{}")
   status            PropertyStatus     @default(AVAILABLE)
+  maxPrice          Float?             @map("max_price")
 
   // ── Listing & Classification ──
   listingPurpose    ListingPurpose?    @map("listing_purpose")

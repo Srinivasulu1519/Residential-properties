@@ -45,6 +45,8 @@ export async function POST(request: NextRequest) {
             monthlyRent, securityDeposit, maintenanceCharge,
             // Tenant preference
             tenantType,
+            // Price Range
+            maxPrice,
         } = body
 
         if (!title || !type || !price || !location || !city || !area || !description) {
@@ -104,7 +106,8 @@ export async function POST(request: NextRequest) {
                 securityDeposit: securityDeposit ? parseFloat(securityDeposit) : undefined,
                 maintenanceCharge: maintenanceCharge ? parseFloat(maintenanceCharge) : undefined,
                 tenantType: tenantType?.toUpperCase() || undefined,
-            }
+                maxPrice: maxPrice ? parseFloat(maxPrice) : undefined,
+            } as any
         })
 
         // Notify matching users (fire-and-forget)

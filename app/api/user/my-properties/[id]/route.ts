@@ -35,7 +35,7 @@ export async function PUT(
             floor, totalFloors, balconies, parking, facing,
             plotDimensions, soilType, roadWidth, gatedCommunity,
             waterSource, electricityStatus, ownerName, ownerPhone, ownerEmail,
-            monthlyRent, securityDeposit, maintenanceCharge, tenantType,
+            monthlyRent, securityDeposit, maintenanceCharge, tenantType, maxPrice,
         } = body
 
         // Only update fields that are provided
@@ -80,10 +80,11 @@ export async function PUT(
         if (securityDeposit !== undefined) updateData.securityDeposit = securityDeposit ? parseFloat(securityDeposit) : null
         if (maintenanceCharge !== undefined) updateData.maintenanceCharge = maintenanceCharge ? parseFloat(maintenanceCharge) : null
         if (tenantType !== undefined) updateData.tenantType = tenantType?.toUpperCase()
+        if (maxPrice !== undefined) updateData.maxPrice = maxPrice ? parseFloat(maxPrice) : null
 
         const updatedProperty = await prisma.property.update({
             where: { id: propertyId },
-            data: updateData
+            data: updateData as any
         })
 
         return NextResponse.json({
