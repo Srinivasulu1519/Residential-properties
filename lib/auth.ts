@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken"
 import { type NextRequest } from "next/server"
 import crypto from "crypto"
+import { isTokenBlacklisted, isUserTokenRevoked } from "@/lib/token-blacklist"
 
 const JWT_SECRET = process.env.JWT_SECRET || "propvista_secret_key_change_in_production"
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "propvista_refresh_secret_change_in_production"
@@ -44,40 +45,107 @@ export interface TokenPayload {
 
 // ─── Access Token ────────────────────────────────────────────
 
+/**
+ * Sign an access token with a unique JTI (JWT ID) for revocation support.
+ * The JTI is stored as a top-level JWT claim alongside the encrypted payload data.
+ */
 export function signToken(payload: TokenPayload): string {
+    const jti = crypto.randomUUID()
     const encryptedData = encrypt(JSON.stringify(payload))
-    return jwt.sign({ data: encryptedData }, JWT_SECRET, { expiresIn: TOKEN_EXPIRY })
+    return jwt.sign({ data: encryptedData, jti }, JWT_SECRET, { expiresIn: TOKEN_EXPIRY })
 }
 
+/**
+ * Verify an access token:
+ * 1. Check JWT signature and expiration
+ * 2. Check if the JTI is blacklisted (token-level revocation)
+ * 3. Check if user's tokens were revoked after this token was issued (user-level revocation)
+ * 4. Decrypt and return the payload
+ */
 export function verifyToken(token: string): TokenPayload | null {
     try {
-        const decoded = jwt.verify(token, JWT_SECRET) as { data: string }
+        const decoded = jwt.verify(token, JWT_SECRET) as { data: string; jti?: string; iat?: number }
         if (!decoded.data) return null
+
+        // JTI Blacklist Check — token-level revocation (logout)
+        if (decoded.jti && isTokenBlacklisted(decoded.jti)) {
+            return null
+        }
+
+        // Decrypt the payload
         const decrypted = decrypt(decoded.data)
-        return JSON.parse(decrypted) as TokenPayload
+        const payload = JSON.parse(decrypted) as TokenPayload
+
+        // User-Level Revocation Check (password change)
+        if (decoded.iat && isUserTokenRevoked(payload.userId, decoded.iat)) {
+            return null
+        }
+
+        return payload
     } catch {
         return null
     }
 }
 
+/**
+ * Decode a token WITHOUT full verification against blacklist.
+ * Used internally by the logout route to extract JTI and expiration
+ * from the token being invalidated.
+ */
+export function decodeTokenUnsafe(token: string): { jti?: string; exp?: number; iat?: number; data?: string } | null {
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET) as { jti?: string; exp?: number; iat?: number; data?: string }
+        return decoded
+    } catch {
+        // Even if expired, try to decode for the JTI
+        try {
+            const decoded = jwt.decode(token) as { jti?: string; exp?: number; iat?: number; data?: string } | null
+            return decoded
+        } catch {
+            return null
+        }
+    }
+}
+
 // ─── Refresh Token ───────────────────────────────────────────
 
+/**
+ * Sign a refresh token with a unique JTI.
+ */
 export function signRefreshToken(payload: TokenPayload): string {
+    const jti = crypto.randomUUID()
     const shortPayload = { userId: payload.userId, email: payload.email, role: payload.role }
     const encryptedData = encrypt(JSON.stringify(shortPayload))
     return jwt.sign(
-        { data: encryptedData },
+        { data: encryptedData, jti },
         JWT_REFRESH_SECRET,
         { expiresIn: REFRESH_TOKEN_EXPIRY }
     )
 }
 
+/**
+ * Verify a refresh token with blacklist and user-level revocation checks.
+ */
 export function verifyRefreshToken(token: string): { userId: string; email: string; role: UserRole } | null {
     try {
-        const decoded = jwt.verify(token, JWT_REFRESH_SECRET) as { data: string }
+        const decoded = jwt.verify(token, JWT_REFRESH_SECRET) as { data: string; jti?: string; iat?: number }
         if (!decoded.data) return null
+
+        // JTI Blacklist Check
+        if (decoded.jti && isTokenBlacklisted(decoded.jti)) {
+            return null
+        }
+
+        // Decrypt the payload
         const decrypted = decrypt(decoded.data)
-        return JSON.parse(decrypted) as { userId: string; email: string; role: UserRole }
+        const payload = JSON.parse(decrypted) as { userId: string; email: string; role: UserRole }
+
+        // User-Level Revocation Check
+        if (decoded.iat && isUserTokenRevoked(payload.userId, decoded.iat)) {
+            return null
+        }
+
+        return payload
     } catch {
         return null
     }

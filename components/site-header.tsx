@@ -13,14 +13,14 @@ import { cn } from "@/lib/utils"
 import { useAdminAuth } from "@/lib/admin-auth"
 
 const PROPERTY_TYPES = [
-  { value: "plot", label: "Plots", icon: LandPlot, color: "text-sky-600", bg: "bg-sky-50", border: "border-sky-200" },
-  { value: "apartment", label: "Apartments", icon: Building2, color: "text-violet-600", bg: "bg-violet-50", border: "border-violet-200" },
-  { value: "villa", label: "Villas", icon: Castle, color: "text-rose-600", bg: "bg-rose-50", border: "border-rose-200" },
-  { value: "farmhouse", label: "Farmhouse", icon: Home, color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200" },
-  { value: "agriculture_land", label: "Agriculture Land", icon: Tractor, color: "text-green-600", bg: "bg-green-50", border: "border-green-200" },
-  { value: "rent", label: "Rent", icon: Key, color: "text-teal-600", bg: "bg-teal-50", border: "border-teal-200" },
-  { value: "commercial", label: "Commercial", icon: Store, color: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-200" },
-  { value: "independent_house", label: "Independent House", icon: Warehouse, color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-200" },
+  { value: "plot", label: "Plots", icon: LandPlot, color: "text-emerald-700", bg: "bg-emerald-50", border: "border-emerald-200/60" },
+  { value: "apartment", label: "Apartments", icon: Building2, color: "text-emerald-700", bg: "bg-emerald-50", border: "border-emerald-200/60" },
+  { value: "villa", label: "Villas", icon: Castle, color: "text-emerald-700", bg: "bg-emerald-50", border: "border-emerald-200/60" },
+  { value: "farmhouse", label: "Farmhouse", icon: Home, color: "text-emerald-700", bg: "bg-emerald-50", border: "border-emerald-200/60" },
+  { value: "agriculture_land", label: "Agriculture Land", icon: Tractor, color: "text-emerald-700", bg: "bg-emerald-50", border: "border-emerald-200/60" },
+  { value: "rent", label: "Rent", icon: Key, color: "text-emerald-700", bg: "bg-emerald-50", border: "border-emerald-200/60" },
+  { value: "commercial", label: "Commercial", icon: Store, color: "text-emerald-700", bg: "bg-emerald-50", border: "border-emerald-200/60" },
+  { value: "independent_house", label: "Independent House", icon: Warehouse, color: "text-emerald-700", bg: "bg-emerald-50", border: "border-emerald-200/60" },
 ]
 
 export function SiteHeader() {
@@ -29,6 +29,7 @@ export function SiteHeader() {
   const router = useRouter()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [megaOpen, setMegaOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const megaRef = useRef<HTMLDivElement>(null)
   const megaTimeout = useRef<NodeJS.Timeout | null>(null)
   const { isAuthenticated, user, logout } = useAdminAuth()
@@ -48,6 +49,14 @@ export function SiteHeader() {
       }
     }
   })
+
+  // Scroll detection for header styling
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10)
+    window.addEventListener("scroll", onScroll, { passive: true })
+    onScroll()
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
 
   // Close mega menu on outside click
   useEffect(() => {
@@ -77,9 +86,16 @@ export function SiteHeader() {
   const currentType = searchParams.get("type")
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 lg:px-8">
-        <Link href="/" className="flex items-center transition-all hover:opacity-90">
+    <header
+      className={cn(
+        "sticky top-0 z-50 transition-all duration-300",
+        scrolled
+          ? "border-b border-border/60 bg-background/95 backdrop-blur-xl shadow-sm shadow-black/[0.03]"
+          : "border-b border-transparent bg-background/80 backdrop-blur-sm"
+      )}
+    >
+      <div className="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between px-6 lg:px-8">
+        <Link href="/" className="flex items-center transition-opacity hover:opacity-80">
           <PropVistaLogo size="md" />
         </Link>
 
@@ -88,8 +104,8 @@ export function SiteHeader() {
           <Link
             href="/"
             className={cn(
-              "rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-secondary",
-              pathname === "/" ? "bg-secondary text-secondary-foreground" : "text-muted-foreground"
+              "px-4 py-2 text-sm font-medium transition-colors",
+              pathname === "/" ? "text-foreground" : "text-muted-foreground hover:text-foreground"
             )}
           >
             Home
@@ -105,8 +121,8 @@ export function SiteHeader() {
             <button
               onClick={() => setMegaOpen(!megaOpen)}
               className={cn(
-                "flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-secondary",
-                pathname === "/properties" ? "bg-secondary text-secondary-foreground" : "text-muted-foreground"
+                "flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-colors",
+                pathname === "/properties" ? "text-foreground" : "text-muted-foreground hover:text-foreground"
               )}
             >
               Properties
@@ -115,25 +131,25 @@ export function SiteHeader() {
 
             {/* Mega Dropdown */}
             {megaOpen && (
-              <div className="absolute left-1/2 top-full pt-2 -translate-x-1/2 z-50">
-                <div className="w-[520px] rounded-xl border border-border bg-background shadow-xl shadow-black/10 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="absolute left-1/2 top-full pt-3 -translate-x-1/2 z-50">
+                <div className="w-[540px] rounded-xl border border-border/60 bg-card shadow-xl shadow-black/[0.08] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
                   {/* Header */}
-                  <div className="bg-gradient-to-r from-slate-900 to-emerald-900 px-5 py-3 flex items-center justify-between">
+                  <div className="border-b border-border/40 px-6 py-4 flex items-center justify-between">
                     <div>
-                      <p className="text-white font-semibold text-sm">Browse Properties</p>
-                      <p className="text-white/50 text-xs">Find your perfect property by type</p>
+                      <p className="font-serif text-base font-semibold text-foreground">Explore Properties</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">Find your perfect space by category</p>
                     </div>
                     <Link
                       href="/properties"
                       onClick={() => setMegaOpen(false)}
-                      className="text-xs text-emerald-300 hover:text-emerald-200 font-medium transition-colors"
+                      className="text-xs text-primary font-medium hover:text-primary/80 transition-colors"
                     >
                       View All →
                     </Link>
                   </div>
 
                   {/* Grid */}
-                  <div className="grid grid-cols-2 gap-2 p-4">
+                  <div className="grid grid-cols-2 gap-1 p-3">
                     {PROPERTY_TYPES.map((type) => {
                       const Icon = type.icon
                       const isActive = currentType === type.value
@@ -143,23 +159,21 @@ export function SiteHeader() {
                           href={`/properties?type=${type.value}`}
                           onClick={() => setMegaOpen(false)}
                           className={cn(
-                            "flex items-center gap-3 rounded-lg border px-3 py-2.5 transition-all duration-200 hover:shadow-sm group",
+                            "flex items-center gap-3 rounded-lg px-4 py-3 transition-all duration-150 group",
                             isActive
-                              ? `${type.bg} ${type.border} shadow-sm`
-                              : "border-transparent hover:border-border hover:bg-secondary/50"
+                              ? "bg-primary/5 text-primary"
+                              : "text-foreground hover:bg-secondary/60"
                           )}
                         >
                           <div className={cn(
                             "flex h-9 w-9 items-center justify-center rounded-lg transition-colors",
-                            isActive ? type.bg : "bg-secondary group-hover:" + type.bg
+                            isActive ? "bg-primary/10" : "bg-secondary group-hover:bg-primary/5"
                           )}>
-                            <Icon className={cn("h-4.5 w-4.5", type.color)} />
+                            <Icon className={cn("h-4 w-4", isActive ? "text-primary" : "text-muted-foreground group-hover:text-primary/70")} />
                           </div>
-                          <div>
-                            <p className={cn("text-sm font-medium", isActive ? type.color : "text-foreground")}>
-                              {type.label}
-                            </p>
-                          </div>
+                          <span className={cn("text-sm font-medium", isActive && "text-primary")}>
+                            {type.label}
+                          </span>
                         </Link>
                       )
                     })}
@@ -171,48 +185,43 @@ export function SiteHeader() {
         </nav>
 
         {/* ========== RIGHT SIDE ========== */}
-        <div className="hidden items-center gap-2 md:flex">
-          {/* Post Property - Always Visible */}
+        <div className="hidden items-center gap-3 md:flex">
+          {/* Post Property */}
           <Link
             href={isAuthenticated ? "/post-property" : "/auth/register"}
-            className="relative flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-500 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-emerald-500/20 transition-all hover:shadow-lg hover:shadow-emerald-500/30 hover:-translate-y-0.5"
+            className="flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md"
           >
             <PlusCircle className="h-4 w-4" />
             Post Property
-            <span className="ml-1 flex items-center gap-0.5 rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
-              <Sparkles className="h-3 w-3" />
-              Free 30 Days
-            </span>
           </Link>
 
           {isAuthenticated && user ? (
             <>
               {user.role === "admin" ? (
-                <Button variant="outline" size="sm" asChild>
+                <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground" asChild>
                   <Link href="/admin/dashboard">
                     <LayoutDashboard className="mr-1.5 h-4 w-4" />
                     Admin
                   </Link>
                 </Button>
               ) : (
-                <Button variant="outline" size="sm" asChild>
+                <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground" asChild>
                   <Link href="/dashboard">
                     <User className="mr-1.5 h-4 w-4" />
-                    My Profile
+                    Profile
                   </Link>
                 </Button>
               )}
-              <Button variant="ghost" size="sm" onClick={handleLogout}>
-                <LogOut className="mr-1.5 h-4 w-4" />
-                Logout
+              <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground h-9 w-9" onClick={handleLogout}>
+                <LogOut className="h-4 w-4" />
               </Button>
             </>
           ) : (
             <>
-              <Button variant="ghost" size="sm" asChild>
+              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground font-medium" asChild>
                 <Link href="/auth/login">Sign In</Link>
               </Button>
-              <Button size="sm" asChild>
+              <Button variant="outline" size="sm" className="rounded-full font-medium" asChild>
                 <Link href="/auth/register">Register</Link>
               </Button>
             </>
@@ -232,14 +241,14 @@ export function SiteHeader() {
 
       {/* ========== MOBILE MENU ========== */}
       {mobileOpen && (
-        <div className="border-t border-border bg-background px-4 py-4 md:hidden">
+        <div className="border-t border-border/40 bg-background px-6 py-5 md:hidden animate-in fade-in slide-in-from-top-1 duration-200">
           <nav className="flex flex-col gap-1">
             <Link
               href="/"
               onClick={() => setMobileOpen(false)}
               className={cn(
-                "rounded-md px-3 py-2.5 text-sm font-medium transition-colors hover:bg-secondary",
-                pathname === "/" ? "bg-secondary text-secondary-foreground" : "text-muted-foreground"
+                "rounded-lg px-4 py-3 text-sm font-medium transition-colors",
+                pathname === "/" ? "bg-secondary text-foreground" : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
               )}
             >
               Home
@@ -248,15 +257,15 @@ export function SiteHeader() {
               href="/properties"
               onClick={() => setMobileOpen(false)}
               className={cn(
-                "rounded-md px-3 py-2.5 text-sm font-medium transition-colors hover:bg-secondary",
-                pathname === "/properties" && !currentType ? "bg-secondary text-secondary-foreground" : "text-muted-foreground"
+                "rounded-lg px-4 py-3 text-sm font-medium transition-colors",
+                pathname === "/properties" && !currentType ? "bg-secondary text-foreground" : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
               )}
             >
               All Properties
             </Link>
 
             {/* Property Types Grid in Mobile */}
-            <div className="my-2 grid grid-cols-2 gap-1.5 px-1">
+            <div className="my-3 grid grid-cols-2 gap-2 px-1">
               {PROPERTY_TYPES.map((type) => {
                 const Icon = type.icon
                 const isActive = currentType === type.value
@@ -266,69 +275,65 @@ export function SiteHeader() {
                     href={`/properties?type=${type.value}`}
                     onClick={() => setMobileOpen(false)}
                     className={cn(
-                      "flex items-center gap-2 rounded-lg border px-2.5 py-2 text-xs font-medium transition-colors",
+                      "flex items-center gap-2.5 rounded-lg border px-3 py-2.5 text-xs font-medium transition-colors",
                       isActive
-                        ? `${type.bg} ${type.border} ${type.color}`
-                        : "border-border text-muted-foreground hover:bg-secondary"
+                        ? "bg-primary/5 border-primary/20 text-primary"
+                        : "border-border/50 text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
                     )}
                   >
-                    <Icon className={cn("h-3.5 w-3.5", type.color)} />
+                    <Icon className={cn("h-3.5 w-3.5", isActive ? "text-primary" : "text-muted-foreground")} />
                     {type.label}
                   </Link>
                 )
               })}
             </div>
 
-            <div className="mt-2 flex flex-col gap-2 border-t border-border pt-3">
+            <div className="mt-3 flex flex-col gap-2.5 border-t border-border/40 pt-4">
               {/* Post Property Mobile */}
               <Link
                 href={isAuthenticated ? "/post-property" : "/auth/register"}
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-500 px-4 py-2.5 text-sm font-semibold text-white"
+                className="flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground"
               >
                 <PlusCircle className="h-4 w-4" />
                 Post Property
-                <span className="flex items-center gap-0.5 rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-bold uppercase">
-                  <Sparkles className="h-3 w-3" />
-                  Free 30 Days
-                </span>
               </Link>
 
               {isAuthenticated && user ? (
                 <>
                   {user.role === "admin" ? (
-                    <Button variant="outline" size="sm" className="w-full justify-start gap-2" asChild>
+                    <Button variant="outline" size="sm" className="w-full justify-start gap-2 rounded-lg" asChild>
                       <Link href="/admin/dashboard" onClick={() => setMobileOpen(false)}>
                         <LayoutDashboard className="h-4 w-4" />
                         Admin Panel
                       </Link>
                     </Button>
                   ) : (
-                    <Button variant="outline" size="sm" className="w-full justify-start gap-2" asChild>
+                    <Button variant="outline" size="sm" className="w-full justify-start gap-2 rounded-lg" asChild>
                       <Link href="/dashboard" onClick={() => setMobileOpen(false)}>
                         <User className="h-4 w-4" />
                         My Profile
                       </Link>
                     </Button>
                   )}
-                  <Button variant="ghost" size="sm" className="w-full justify-start gap-2" onClick={handleLogout}>
+                  <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground" onClick={handleLogout}>
                     <LogOut className="h-4 w-4" />
                     Logout
                   </Button>
                 </>
               ) : (
-                <>
-                  <Button variant="outline" size="sm" className="w-full" asChild>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button variant="outline" size="sm" className="w-full rounded-lg" asChild>
                     <Link href="/auth/login" onClick={() => setMobileOpen(false)}>
                       Sign In
                     </Link>
                   </Button>
-                  <Button size="sm" className="w-full" asChild>
+                  <Button size="sm" className="w-full rounded-full" asChild>
                     <Link href="/auth/register" onClick={() => setMobileOpen(false)}>
                       Register
                     </Link>
                   </Button>
-                </>
+                </div>
               )}
             </div>
           </nav>

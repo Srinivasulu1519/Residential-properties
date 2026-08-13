@@ -126,20 +126,20 @@ export function PropertyFilters({
   const typeConfig = type !== "all" ? TYPE_FILTER_CONFIG[type] || {} : {}
 
   return (
-    <div className="flex flex-col gap-4 rounded-xl border border-border bg-card p-4 lg:p-6 shadow-sm transition-all">
+    <div className="flex flex-col gap-5 rounded-xl border border-border/50 bg-card p-5 lg:p-6">
       {/* Search + Sort row */}
       <div className="flex flex-col gap-3 sm:flex-row">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
           <Input
-            placeholder="Search properties by name, area, full address..."
+            placeholder="Search properties..."
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-10 h-11 bg-muted/20 focus:bg-background transition-colors"
+            className="h-11 pl-11 bg-secondary/30 border-border/40 text-sm placeholder:text-muted-foreground/50 focus:bg-background focus:border-border transition-colors"
           />
         </div>
         <Select value={sortBy} onValueChange={onSortChange}>
-          <SelectTrigger className="w-full sm:w-[200px] h-11">
+          <SelectTrigger className="w-full sm:w-[180px] h-11 border-border/40 text-sm">
             <SelectValue placeholder="Sort By" />
           </SelectTrigger>
           <SelectContent>
@@ -152,15 +152,14 @@ export function PropertyFilters({
       </div>
 
       {/* Main Filters row */}
-      <div className="flex items-center gap-2 flex-wrap">
-        <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground mr-1">
+      <div className="flex items-center gap-2.5 flex-wrap">
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground/60 mr-0.5">
           <SlidersHorizontal className="h-3.5 w-3.5" />
-          <span className="hidden sm:inline">Filters</span>
         </div>
 
         {showTypeFilter && (
           <Select value={type} onValueChange={onTypeChange}>
-            <SelectTrigger className="h-9 w-auto min-w-[130px] text-xs">
+            <SelectTrigger className="h-9 w-auto min-w-[130px] text-xs border-border/40">
               <SelectValue placeholder="Property Type" />
             </SelectTrigger>
             <SelectContent>
@@ -175,7 +174,7 @@ export function PropertyFilters({
         )}
 
         <Select value={status} onValueChange={onStatusChange}>
-          <SelectTrigger className="h-9 w-auto min-w-[120px] text-xs">
+          <SelectTrigger className="h-9 w-auto min-w-[120px] text-xs border-border/40">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
@@ -192,7 +191,7 @@ export function PropertyFilters({
           onCityChange(v)
           if (onLocationChange) onLocationChange("all")
         }}>
-          <SelectTrigger className="h-9 w-auto min-w-[130px] text-xs">
+          <SelectTrigger className="h-9 w-auto min-w-[130px] text-xs border-border/40">
             <SelectValue placeholder="City" />
           </SelectTrigger>
           <SelectContent>
@@ -209,8 +208,8 @@ export function PropertyFilters({
         {locations.length > 0 && onLocationChange && (
           <div className="animate-in fade-in slide-in-from-left-2 duration-300">
             <Select value={location} onValueChange={onLocationChange}>
-              <SelectTrigger className="h-9 w-auto min-w-[150px] text-xs border-primary/20 bg-primary/5">
-                <MapPin className="h-3 w-3 mr-1 text-primary/70" />
+              <SelectTrigger className="h-9 w-auto min-w-[150px] text-xs border-border/40">
+                <MapPin className="h-3 w-3 mr-1.5 text-muted-foreground" />
                 <SelectValue placeholder="Location" />
               </SelectTrigger>
               <SelectContent>
@@ -225,13 +224,13 @@ export function PropertyFilters({
           </div>
         )}
 
-        {/* Listing Purpose filter - shown for all types */}
+        {/* Listing Purpose filter */}
         {onMetadataFilterChange && (
           <Select
             value={metadataFilters.listingPurpose || "all"}
             onValueChange={(v) => onMetadataFilterChange("listingPurpose", v)}
           >
-            <SelectTrigger className="h-9 w-auto min-w-[120px] text-xs">
+            <SelectTrigger className="h-9 w-auto min-w-[120px] text-xs border-border/40">
               <SelectValue placeholder="Purpose" />
             </SelectTrigger>
             <SelectContent>
@@ -246,309 +245,167 @@ export function PropertyFilters({
 
       {/* Type-Specific Filters */}
       {type !== "all" && onMetadataFilterChange && Object.keys(typeConfig).length > 0 && (
-        <div className="flex items-center gap-2 flex-wrap border-t border-border pt-3 animate-in fade-in slide-in-from-top-2 duration-300">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60 mr-1">
-            {PROPERTY_TYPES.find(t => t.value === type)?.label} Filters
+        <div className="flex items-center gap-2.5 flex-wrap border-t border-border/40 pt-4 animate-in fade-in slide-in-from-top-1 duration-300">
+          <span className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground/50 mr-1">
+            {PROPERTY_TYPES.find(t => t.value === type)?.label}
           </span>
 
-          {/* BHK Filter */}
           {typeConfig.bhk && (
-            <Select
-              value={metadataFilters.bhk || "all"}
-              onValueChange={(v) => onMetadataFilterChange("bhk", v)}
-            >
-              <SelectTrigger className="h-8 w-auto min-w-[100px] text-xs">
-                <SelectValue placeholder="BHK" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All BHK</SelectItem>
-                {BHK_OPTIONS.map(b => (
-                  <SelectItem key={b.value} value={b.value}>{b.label}</SelectItem>
-                ))}
-              </SelectContent>
+            <Select value={metadataFilters.bhk || "all"} onValueChange={(v) => onMetadataFilterChange("bhk", v)}>
+              <SelectTrigger className="h-8 w-auto min-w-[100px] text-xs border-border/40"><SelectValue placeholder="BHK" /></SelectTrigger>
+              <SelectContent><SelectItem value="all">All BHK</SelectItem>{BHK_OPTIONS.map(b => (<SelectItem key={b.value} value={b.value}>{b.label}</SelectItem>))}</SelectContent>
             </Select>
           )}
 
-          {/* Furnishing Filter */}
           {typeConfig.furnishing && (
-            <Select
-              value={metadataFilters.furnishing || "all"}
-              onValueChange={(v) => onMetadataFilterChange("furnishing", v)}
-            >
-              <SelectTrigger className="h-8 w-auto min-w-[130px] text-xs">
-                <SelectValue placeholder="Furnishing" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Furnishing</SelectItem>
-                {FURNISHING_OPTIONS.map(f => (
-                  <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>
-                ))}
-              </SelectContent>
+            <Select value={metadataFilters.furnishing || "all"} onValueChange={(v) => onMetadataFilterChange("furnishing", v)}>
+              <SelectTrigger className="h-8 w-auto min-w-[130px] text-xs border-border/40"><SelectValue placeholder="Furnishing" /></SelectTrigger>
+              <SelectContent><SelectItem value="all">All Furnishing</SelectItem>{FURNISHING_OPTIONS.map(f => (<SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>))}</SelectContent>
             </Select>
           )}
 
-          {/* Tenant Type */}
           {typeConfig.tenantType && (
-            <Select
-              value={metadataFilters.tenantType || "all"}
-              onValueChange={(v) => onMetadataFilterChange("tenantType", v)}
-            >
-              <SelectTrigger className="h-8 w-auto min-w-[120px] text-xs">
-                <SelectValue placeholder="Tenant Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Any Tenant</SelectItem>
-                {TENANT_TYPE_OPTIONS.map(t => (
-                  <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
-                ))}
-              </SelectContent>
+            <Select value={metadataFilters.tenantType || "all"} onValueChange={(v) => onMetadataFilterChange("tenantType", v)}>
+              <SelectTrigger className="h-8 w-auto min-w-[120px] text-xs border-border/40"><SelectValue placeholder="Tenant Type" /></SelectTrigger>
+              <SelectContent><SelectItem value="all">Any Tenant</SelectItem>{TENANT_TYPE_OPTIONS.map(t => (<SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>))}</SelectContent>
             </Select>
           )}
 
-          {/* Construction Status */}
           {typeConfig.constructionStatus && (
-            <Select
-              value={metadataFilters.constructionStatus || "all"}
-              onValueChange={(v) => onMetadataFilterChange("constructionStatus", v)}
-            >
-              <SelectTrigger className="h-8 w-auto min-w-[150px] text-xs">
-                <SelectValue placeholder="Construction" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                {CONSTRUCTION_STATUS_OPTIONS.map(c => (
-                  <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
-                ))}
-              </SelectContent>
+            <Select value={metadataFilters.constructionStatus || "all"} onValueChange={(v) => onMetadataFilterChange("constructionStatus", v)}>
+              <SelectTrigger className="h-8 w-auto min-w-[150px] text-xs border-border/40"><SelectValue placeholder="Construction" /></SelectTrigger>
+              <SelectContent><SelectItem value="all">All Status</SelectItem>{CONSTRUCTION_STATUS_OPTIONS.map(c => (<SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>))}</SelectContent>
             </Select>
           )}
 
-          {/* Property Age */}
           {typeConfig.propertyAge && (
-            <Select
-              value={metadataFilters.propertyAge || "all"}
-              onValueChange={(v) => onMetadataFilterChange("propertyAge", v)}
-            >
-              <SelectTrigger className="h-8 w-auto min-w-[120px] text-xs">
-                <SelectValue placeholder="Age" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Any Age</SelectItem>
-                {PROPERTY_AGE_OPTIONS.map(a => (
-                  <SelectItem key={a.value} value={a.value}>{a.label}</SelectItem>
-                ))}
-              </SelectContent>
+            <Select value={metadataFilters.propertyAge || "all"} onValueChange={(v) => onMetadataFilterChange("propertyAge", v)}>
+              <SelectTrigger className="h-8 w-auto min-w-[120px] text-xs border-border/40"><SelectValue placeholder="Age" /></SelectTrigger>
+              <SelectContent><SelectItem value="all">Any Age</SelectItem>{PROPERTY_AGE_OPTIONS.map(a => (<SelectItem key={a.value} value={a.value}>{a.label}</SelectItem>))}</SelectContent>
             </Select>
           )}
 
-          {/* Facing Filter */}
           {typeConfig.facing && (
-            <Select
-              value={metadataFilters.facing || "all"}
-              onValueChange={(v) => onMetadataFilterChange("facing", v)}
-            >
-              <SelectTrigger className="h-8 w-auto min-w-[110px] text-xs">
-                <SelectValue placeholder="Facing" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Facings</SelectItem>
-                {FACING_OPTIONS.map(f => (
-                  <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>
-                ))}
-              </SelectContent>
+            <Select value={metadataFilters.facing || "all"} onValueChange={(v) => onMetadataFilterChange("facing", v)}>
+              <SelectTrigger className="h-8 w-auto min-w-[110px] text-xs border-border/40"><SelectValue placeholder="Facing" /></SelectTrigger>
+              <SelectContent><SelectItem value="all">All Facings</SelectItem>{FACING_OPTIONS.map(f => (<SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>))}</SelectContent>
             </Select>
           )}
 
-          {/* Parking */}
           {typeConfig.parking && (
-            <Select
-              value={metadataFilters.parking || "all"}
-              onValueChange={(v) => onMetadataFilterChange("parking", v)}
-            >
-              <SelectTrigger className="h-8 w-auto min-w-[110px] text-xs">
-                <SelectValue placeholder="Parking" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Any Parking</SelectItem>
-                {PARKING_OPTIONS.map(p => (
-                  <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>
-                ))}
-              </SelectContent>
+            <Select value={metadataFilters.parking || "all"} onValueChange={(v) => onMetadataFilterChange("parking", v)}>
+              <SelectTrigger className="h-8 w-auto min-w-[110px] text-xs border-border/40"><SelectValue placeholder="Parking" /></SelectTrigger>
+              <SelectContent><SelectItem value="all">Any Parking</SelectItem>{PARKING_OPTIONS.map(p => (<SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>))}</SelectContent>
             </Select>
           )}
 
-          {/* Soil Type (Agriculture) */}
           {typeConfig.soilType && (
-            <Select
-              value={metadataFilters.soilType || "all"}
-              onValueChange={(v) => onMetadataFilterChange("soilType", v)}
-            >
-              <SelectTrigger className="h-8 w-auto min-w-[110px] text-xs">
-                <SelectValue placeholder="Soil Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Soils</SelectItem>
-                {SOIL_TYPE_OPTIONS.map(s => (
-                  <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
-                ))}
-              </SelectContent>
+            <Select value={metadataFilters.soilType || "all"} onValueChange={(v) => onMetadataFilterChange("soilType", v)}>
+              <SelectTrigger className="h-8 w-auto min-w-[110px] text-xs border-border/40"><SelectValue placeholder="Soil Type" /></SelectTrigger>
+              <SelectContent><SelectItem value="all">All Soils</SelectItem>{SOIL_TYPE_OPTIONS.map(s => (<SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>))}</SelectContent>
             </Select>
           )}
 
-          {/* Road Width */}
           {typeConfig.roadWidth && (
-            <Select
-              value={metadataFilters.roadWidth || "all"}
-              onValueChange={(v) => onMetadataFilterChange("roadWidth", v)}
-            >
-              <SelectTrigger className="h-8 w-auto min-w-[110px] text-xs">
-                <SelectValue placeholder="Road Width" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Any Width</SelectItem>
-                {ROAD_WIDTH_OPTIONS.map(r => (
-                  <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
-                ))}
-              </SelectContent>
+            <Select value={metadataFilters.roadWidth || "all"} onValueChange={(v) => onMetadataFilterChange("roadWidth", v)}>
+              <SelectTrigger className="h-8 w-auto min-w-[110px] text-xs border-border/40"><SelectValue placeholder="Road Width" /></SelectTrigger>
+              <SelectContent><SelectItem value="all">Any Width</SelectItem>{ROAD_WIDTH_OPTIONS.map(r => (<SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>))}</SelectContent>
             </Select>
           )}
 
-          {/* Gated Community Toggle */}
           {typeConfig.gatedCommunity && (
             <Button
               variant={metadataFilters.gatedCommunity === "true" ? "default" : "outline"}
               size="sm"
-              className="h-8 text-xs gap-1"
-              onClick={() =>
-                onMetadataFilterChange(
-                  "gatedCommunity",
-                  metadataFilters.gatedCommunity === "true" ? "all" : "true"
-                )
-              }
+              className="h-8 text-xs gap-1.5 border-border/40"
+              onClick={() => onMetadataFilterChange("gatedCommunity", metadataFilters.gatedCommunity === "true" ? "all" : "true")}
             >
-              🏘️ Gated Community
+              Gated Community
             </Button>
           )}
 
-          {/* Water Source Toggle */}
           {typeConfig.waterSource && (
             <Button
               variant={metadataFilters.waterSource === "true" ? "default" : "outline"}
               size="sm"
-              className="h-8 text-xs gap-1"
-              onClick={() =>
-                onMetadataFilterChange(
-                  "waterSource",
-                  metadataFilters.waterSource === "true" ? "all" : "true"
-                )
-              }
+              className="h-8 text-xs gap-1.5 border-border/40"
+              onClick={() => onMetadataFilterChange("waterSource", metadataFilters.waterSource === "true" ? "all" : "true")}
             >
-              💧 Water Source
+              Water Source
             </Button>
           )}
 
-          {/* Electricity Toggle */}
           {typeConfig.electricityStatus && (
             <Button
               variant={metadataFilters.electricityStatus === "true" ? "default" : "outline"}
               size="sm"
-              className="h-8 text-xs gap-1"
-              onClick={() =>
-                onMetadataFilterChange(
-                  "electricityStatus",
-                  metadataFilters.electricityStatus === "true" ? "all" : "true"
-                )
-              }
+              className="h-8 text-xs gap-1.5 border-border/40"
+              onClick={() => onMetadataFilterChange("electricityStatus", metadataFilters.electricityStatus === "true" ? "all" : "true")}
             >
-              ⚡ Electricity
+              Electricity
             </Button>
           )}
         </div>
       )}
 
-      {/* Price Range Inputs */}
+      {/* Price/Area Range Inputs */}
       {type !== "all" && onMetadataFilterChange && (typeConfig.priceRange || typeConfig.areaRange) && (
-        <div className="flex items-center gap-2 flex-wrap border-t border-border pt-3 animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="flex items-center gap-2.5 flex-wrap border-t border-border/40 pt-4 animate-in fade-in slide-in-from-top-1 duration-200">
           {typeConfig.priceRange && (
             <>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">Budget</span>
-              <Input
-                type="number"
-                placeholder="Min Price"
-                value={metadataFilters.minPrice || ""}
-                onChange={(e) => onMetadataFilterChange("minPrice", e.target.value || "all")}
-                className="h-8 w-[120px] text-xs"
-              />
-              <span className="text-xs text-muted-foreground">to</span>
-              <Input
-                type="number"
-                placeholder="Max Price"
-                value={metadataFilters.maxPrice || ""}
-                onChange={(e) => onMetadataFilterChange("maxPrice", e.target.value || "all")}
-                className="h-8 w-[120px] text-xs"
-              />
+              <span className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground/50">Budget</span>
+              <Input type="number" placeholder="Min" value={metadataFilters.minPrice || ""} onChange={(e) => onMetadataFilterChange("minPrice", e.target.value || "all")} className="h-8 w-[110px] text-xs border-border/40" />
+              <span className="text-xs text-muted-foreground/40">—</span>
+              <Input type="number" placeholder="Max" value={metadataFilters.maxPrice || ""} onChange={(e) => onMetadataFilterChange("maxPrice", e.target.value || "all")} className="h-8 w-[110px] text-xs border-border/40" />
             </>
           )}
           {typeConfig.areaRange && (
             <>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60 ml-2">Area</span>
-              <Input
-                type="number"
-                placeholder="Min Area"
-                value={metadataFilters.minArea || ""}
-                onChange={(e) => onMetadataFilterChange("minArea", e.target.value || "all")}
-                className="h-8 w-[110px] text-xs"
-              />
-              <span className="text-xs text-muted-foreground">to</span>
-              <Input
-                type="number"
-                placeholder="Max Area"
-                value={metadataFilters.maxArea || ""}
-                onChange={(e) => onMetadataFilterChange("maxArea", e.target.value || "all")}
-                className="h-8 w-[110px] text-xs"
-              />
-              <span className="text-xs text-muted-foreground">sq ft</span>
+              <span className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground/50 ml-3">Area</span>
+              <Input type="number" placeholder="Min" value={metadataFilters.minArea || ""} onChange={(e) => onMetadataFilterChange("minArea", e.target.value || "all")} className="h-8 w-[100px] text-xs border-border/40" />
+              <span className="text-xs text-muted-foreground/40">—</span>
+              <Input type="number" placeholder="Max" value={metadataFilters.maxArea || ""} onChange={(e) => onMetadataFilterChange("maxArea", e.target.value || "all")} className="h-8 w-[100px] text-xs border-border/40" />
+              <span className="text-[10px] text-muted-foreground/40">sq ft</span>
             </>
           )}
         </div>
       )}
 
       {/* Active Filter Pills + Result Count */}
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2 flex-wrap">
-          <p className="text-sm text-muted-foreground">
-            <span className="font-semibold text-foreground">{totalResults}</span>{" "}
-            {totalResults === 1 ? "property" : "properties"} found
-          </p>
+      {(activeFilterPills.length > 0 || totalResults >= 0) && (
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border/40 pt-4">
+          <div className="flex items-center gap-2 flex-wrap">
+            <p className="text-sm text-muted-foreground">
+              <span className="font-semibold text-foreground">{totalResults}</span>{" "}
+              {totalResults === 1 ? "property" : "properties"}
+            </p>
 
-          {activeFilterPills.map((pill) => (
-            <Badge
-              key={pill.label}
-              variant="secondary"
-              className="gap-1 pl-2.5 pr-1 py-0.5 text-xs font-medium cursor-pointer hover:bg-destructive/10 hover:text-destructive transition-colors animate-in fade-in zoom-in-95 duration-200"
-              onClick={pill.onRemove}
+            {activeFilterPills.map((pill) => (
+              <Badge
+                key={pill.label}
+                variant="secondary"
+                className="gap-1 pl-2.5 pr-1.5 py-0.5 text-[11px] font-medium cursor-pointer hover:bg-destructive/10 hover:text-destructive transition-colors"
+                onClick={pill.onRemove}
+              >
+                {pill.label}
+                <X className="h-3 w-3" />
+              </Badge>
+            ))}
+          </div>
+
+          {totalActiveFilters > 0 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearFilters}
+              className="h-8 gap-1.5 text-xs text-muted-foreground hover:text-destructive"
             >
-              {pill.label}
-              <X className="h-3 w-3 ml-0.5" />
-            </Badge>
-          ))}
+              <X className="h-3 w-3" />
+              Clear all
+            </Button>
+          )}
         </div>
-
-        {totalActiveFilters > 0 && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={clearFilters}
-            className="h-8 gap-1.5 text-xs text-muted-foreground hover:text-destructive transition-colors"
-          >
-            <X className="h-3.5 w-3.5" />
-            Clear all
-            <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-xs">
-              {totalActiveFilters}
-            </Badge>
-          </Button>
-        )}
-      </div>
+      )}
     </div>
   )
 }

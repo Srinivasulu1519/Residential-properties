@@ -146,12 +146,8 @@ export function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModalProps) 
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => { if (!open) { onClose(); reset(); } }}>
-            <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden border-none shadow-2xl">
-                <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-900 p-8 text-white relative overflow-hidden">
-                    {/* Decorative elements */}
-                    <div className="absolute -top-10 -right-10 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl" />
-                    <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl" />
-                    
+            <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden border-border/40 shadow-xl">
+                <div className="bg-[#1a2e2a] p-8 text-white relative overflow-hidden">
                     <button 
                         onClick={onClose}
                         className="absolute right-4 top-4 p-2 rounded-full hover:bg-white/10 transition-colors"
@@ -159,11 +155,10 @@ export function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModalProps) 
                         <X className="h-4 w-4" />
                     </button>
 
-                    <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-500/30 mb-4 px-3 py-1">
-                        <Zap className="h-3 w-3 mr-1.5 fill-current" />
-                        Premium Plan Upgrade
-                    </Badge>
-                    <DialogTitle className="text-3xl font-serif font-bold mb-2">Complete Payment</DialogTitle>
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-white/40 mb-4">
+                        Premium Plan
+                    </p>
+                    <DialogTitle className="text-2xl font-serif font-bold mb-2">Complete Payment</DialogTitle>
                     <DialogDescription className="text-white/60 text-base leading-relaxed">
                         Unlock unlimited property postings and contact views for just <span className="text-white font-bold">₹499/month</span>.
                     </DialogDescription>

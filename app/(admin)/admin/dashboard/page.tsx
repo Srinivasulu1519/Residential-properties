@@ -104,25 +104,19 @@ export default function AdminDashboardPage() {
   return (
     <div className="space-y-8">
       {/* ========== HERO WELCOME ========== */}
-      <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-900 p-8 lg:p-10 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-        {/* Decorative elements */}
-        <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-emerald-500/10 blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-teal-500/10 blur-2xl" />
-        <div className="absolute top-4 right-8 w-24 h-24 rounded-xl bg-white/5 rotate-12" />
-        <div className="absolute bottom-4 right-24 w-16 h-16 rounded-xl bg-white/5 -rotate-6" />
-
+      <div className={`relative overflow-hidden rounded-xl bg-[#1a2e2a] p-8 lg:p-10 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
         <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <div>
             <h1 className="text-2xl lg:text-3xl font-serif font-bold text-white tracking-tight">
-              {getGreeting()}, {user?.name?.split(' ')[0] || "Admin"} 👋
+              {getGreeting()}, {user?.name?.split(' ')[0] || "Admin"}
             </h1>
             <p className="mt-2 text-white/50 text-sm max-w-lg leading-relaxed">
-              You have <span className="text-emerald-400 font-semibold">{stats.total} properties</span> listed,
-              with <span className="text-emerald-400 font-semibold">{stats.available} available</span> and{" "}
-              <span className="text-amber-400 font-semibold">{stats.upcoming} upcoming</span>.
+              You have <span className="text-white/80 font-medium">{stats.total} properties</span> listed,
+              with <span className="text-white/80 font-medium">{stats.available} available</span> and{" "}
+              <span className="text-white/80 font-medium">{stats.upcoming} upcoming</span>.
             </p>
           </div>
-          <Button className="gap-2 bg-white text-slate-900 hover:bg-white/90 shadow-lg shadow-black/20 shrink-0" asChild>
+          <Button className="gap-2 bg-white text-foreground hover:bg-white/90 shrink-0 rounded-full" asChild>
             <Link href="/admin/properties/new">
               <PlusCircle className="h-4 w-4" />
               Add Property
@@ -221,45 +215,42 @@ export default function AdminDashboardPage() {
 
       {/* ========== STATUS OVERVIEW ========== */}
       <div className={`grid gap-4 sm:grid-cols-3 transition-all duration-700 delay-200 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-        <Card className="border-emerald-100 bg-gradient-to-br from-emerald-50/50 to-white overflow-hidden hover:shadow-md transition-shadow group">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 to-emerald-600" />
+        <Card className="border-border/40 bg-card hover:shadow-sm transition-shadow group">
           <CardContent className="flex items-center gap-4 p-5">
-            <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-110 transition-transform">
-              <Eye className="h-5 w-5 text-white" />
+            <div className="h-10 w-10 rounded-lg bg-emerald-50 flex items-center justify-center">
+              <Eye className="h-5 w-5 text-emerald-600" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Available</p>
-              <p className="font-serif text-2xl font-bold text-foreground">
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">Available</p>
+              <p className="font-serif text-2xl font-bold text-foreground mt-0.5">
                 <AnimatedNumber value={stats.available} />
               </p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-amber-100 bg-gradient-to-br from-amber-50/50 to-white overflow-hidden hover:shadow-md transition-shadow group">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 to-orange-500" />
+        <Card className="border-border/40 bg-card hover:shadow-sm transition-shadow group">
           <CardContent className="flex items-center gap-4 p-5">
-            <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/20 group-hover:scale-110 transition-transform">
-              <TrendingUp className="h-5 w-5 text-white" />
+            <div className="h-10 w-10 rounded-lg bg-amber-50 flex items-center justify-center">
+              <TrendingUp className="h-5 w-5 text-amber-600" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Upcoming</p>
-              <p className="font-serif text-2xl font-bold text-foreground">
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">Upcoming</p>
+              <p className="font-serif text-2xl font-bold text-foreground mt-0.5">
                 <AnimatedNumber value={stats.upcoming} />
               </p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-red-100 bg-gradient-to-br from-red-50/50 to-white overflow-hidden hover:shadow-md transition-shadow group">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-400 to-red-600" />
+        <Card className="border-border/40 bg-card hover:shadow-sm transition-shadow group">
           <CardContent className="flex items-center gap-4 p-5">
-            <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-lg shadow-red-500/20 group-hover:scale-110 transition-transform">
-              <MapPin className="h-5 w-5 text-white" />
+            <div className="h-10 w-10 rounded-lg bg-red-50 flex items-center justify-center">
+              <MapPin className="h-5 w-5 text-red-500" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Sold</p>
-              <p className="font-serif text-2xl font-bold text-foreground">
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">Sold</p>
+              <p className="font-serif text-2xl font-bold text-foreground mt-0.5">
                 <AnimatedNumber value={stats.sold} />
               </p>
             </div>
@@ -269,7 +260,7 @@ export default function AdminDashboardPage() {
 
       {/* ========== RECENT LISTINGS TABLE ========== */}
       <div className={`transition-all duration-700 delay-300 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-        <Card className="border-border overflow-hidden shadow-sm">
+        <Card className="border-border/40 overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-slate-50/80 to-white border-b border-border/50">
             <div>
               <CardTitle className="font-serif text-lg">Recent Listings</CardTitle>
@@ -375,19 +366,17 @@ function StatCard({
   const count = useCounter(value)
 
   return (
-    <Card className={`${border} bg-gradient-to-br ${bg} overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 group relative`}>
-      {/* Gradient accent bar */}
-      <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${gradient}`} />
+    <Card className="border-border/40 bg-card hover:shadow-sm hover:-translate-y-0.5 transition-all duration-300 group">
       <CardContent className="p-5">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-muted-foreground font-medium">{label}</p>
-            <p className="mt-1 font-serif text-3xl font-bold text-foreground tabular-nums">
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{label}</p>
+            <p className="mt-1.5 font-serif text-2xl font-bold text-foreground tabular-nums">
               {count}
             </p>
           </div>
-          <div className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${gradient} shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-            <Icon className="h-6 w-6 text-white" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/8 group-hover:bg-primary/12 transition-colors duration-300">
+            <Icon className="h-5 w-5 text-primary" />
           </div>
         </div>
       </CardContent>

@@ -1,11 +1,24 @@
 import { NextRequest, NextResponse } from "next/server"
 import { cookies } from "next/headers"
-import { ADMIN_TOKEN_COOKIE, USER_TOKEN_COOKIE, ADMIN_REFRESH_COOKIE, USER_REFRESH_COOKIE } from "@/lib/auth"
+import { ADMIN_TOKEN_COOKIE, USER_TOKEN_COOKIE, ADMIN_REFRESH_COOKIE, USER_REFRESH_COOKIE, getTokenFromRequest, decodeTokenUnsafe } from "@/lib/auth"
+import { blacklistToken } from "@/lib/token-blacklist"
 
 export async function POST(request: NextRequest) {
     try {
         const cookieStore = await cookies()
         
+        // ─── JTI Blacklisting: Revoke the current token ─────────
+        // Extract the token from the request to get its JTI
+        const token = getTokenFromRequest(request)
+        if (token) {
+            const decoded = decodeTokenUnsafe(token)
+            if (decoded?.jti && decoded?.exp) {
+                // Add the JTI to the blacklist with TTL = token's remaining lifespan
+                blacklistToken(decoded.jti, decoded.exp)
+            }
+        }
+
+        // ─── Cookie Cleanup ──────────────────────────────────────
         let roleToLogout: string | null = null
         try {
             const body = await request.json()

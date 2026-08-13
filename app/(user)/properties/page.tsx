@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import { SiteHeader } from "@/components/site-header"
+import { SiteFooter } from "@/components/site-footer"
 
 import { PropertyCard } from "@/components/property-card"
 import { PropertyFilters } from "@/components/property-filters"
@@ -158,26 +159,30 @@ export default function PropertiesPage() {
     return result
   }, [properties, search, type, status, city, location, sortBy, metadataFilters])
 
+  const pageTitle = type === "all"
+    ? "All Properties"
+    : (PROPERTY_TYPES.find(t => t.value === type)?.label || "Properties")
+
   return (
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
 
       <main className="flex-1">
-        <div className="border-b border-border bg-secondary/30 px-4 py-10 lg:px-8 lg:py-14">
+        {/* Page Header */}
+        <div className="border-b border-border/40 px-6 py-14 lg:px-8 lg:py-20">
           <div className="mx-auto max-w-7xl">
-            <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-primary">
+            <p className="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
               Browse
             </p>
-            <h1 className="font-serif text-3xl font-bold text-foreground md:text-4xl text-balance">
-              {type === "all"
-                ? "All Properties"
-                : PROPERTY_TYPES.find(t => t.value === type)?.label + "s" || "Properties"}
+            <h1 className="font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
+              {pageTitle}
             </h1>
           </div>
         </div>
 
         <TrialGate>
-          <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8">
+          <div className="mx-auto max-w-7xl px-6 py-10 lg:px-8 lg:py-12">
+            {/* Filters */}
             <PropertyFilters
               search={search}
               onSearchChange={setSearch}
@@ -200,25 +205,26 @@ export default function PropertiesPage() {
               onClearFilters={clearFilters}
             />
 
+            {/* Results */}
             {loading ? (
-              <div className="flex flex-col items-center justify-center gap-4 py-20">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <div className="flex flex-col items-center justify-center gap-4 py-28">
+                <Loader2 className="h-6 w-6 animate-spin text-primary" />
                 <p className="text-sm text-muted-foreground">Loading properties...</p>
               </div>
             ) : filtered.length === 0 ? (
-              <div className="flex flex-col items-center justify-center gap-4 py-20">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-                  <Building2 className="h-8 w-8 text-muted-foreground" />
+              <div className="flex flex-col items-center justify-center gap-4 py-28 text-center">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary">
+                  <Building2 className="h-7 w-7 text-muted-foreground" />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground">
+                <h3 className="font-serif text-xl font-semibold text-foreground">
                   No properties found
                 </h3>
-                <p className="text-sm text-muted-foreground">
-                  Try adjusting your filters or search criteria.
+                <p className="max-w-sm text-sm text-muted-foreground">
+                  Try adjusting your filters or search criteria to find what you&apos;re looking for.
                 </p>
               </div>
             ) : (
-              <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {filtered.map((property) => (
                   <PropertyCard key={property.id} property={property} />
                 ))}
@@ -228,7 +234,7 @@ export default function PropertiesPage() {
         </TrialGate>
       </main>
 
-
+      <SiteFooter />
     </div>
   )
 }

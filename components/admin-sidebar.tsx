@@ -82,14 +82,16 @@ export function AdminSidebar() {
     : "AD"
 
   return (
-    <aside className="flex h-screen w-72 flex-col border-r bg-card/40 backdrop-blur-xl">
-      <div className="flex h-16 items-center px-5 border-b border-border/50">
+    <aside className="flex h-screen w-72 flex-col border-r border-border/50 bg-card">
+      {/* Logo */}
+      <div className="flex h-[4.5rem] items-center px-6 border-b border-border/40">
         <PropVistaLogo size="sm" />
-        <span className="ml-auto text-[9px] font-bold uppercase tracking-widest text-muted-foreground/50 bg-primary/10 text-primary px-2 py-0.5 rounded-full">Admin</span>
+        <span className="ml-auto text-[9px] font-medium uppercase tracking-widest text-muted-foreground bg-secondary px-2 py-0.5 rounded-full">Admin</span>
       </div>
 
+      {/* Navigation */}
       <div className="flex-1 overflow-y-auto px-4 py-8">
-        <nav className="flex flex-col gap-1">
+        <nav className="flex flex-col gap-0.5">
           {NAV_ITEMS.map((item) => {
             const isActive =
               pathname === item.href ||
@@ -101,14 +103,14 @@ export function AdminSidebar() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "group relative flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-200",
+                  "group relative flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-150",
                   isActive
-                    ? "bg-gradient-to-r from-primary/15 to-primary/5 text-primary shadow-sm"
-                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                    ? "bg-primary/8 text-primary"
+                    : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
                 )}
               >
                 <item.icon className={cn(
-                  "h-5 w-5 transition-transform duration-200",
+                  "h-4.5 w-4.5 transition-colors",
                   isActive ? "text-primary" : "text-muted-foreground/60 group-hover:text-foreground"
                 )} />
                 {item.label}
@@ -118,17 +120,18 @@ export function AdminSidebar() {
         </nav>
       </div>
 
-      <div className="mt-auto border-t border-border/50 p-4">
+      {/* User section */}
+      <div className="border-t border-border/40 p-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex w-full items-center gap-3 rounded-xl p-2.5 transition-all hover:bg-secondary/50 group">
-              <Avatar className="h-10 w-10 border-2 border-primary/20 shadow-sm group-hover:shadow-md transition-shadow">
-                <AvatarFallback className="bg-primary/10 text-primary font-bold">
+            <button className="flex w-full items-center gap-3 rounded-lg p-2.5 transition-all hover:bg-secondary/50 group">
+              <Avatar className="h-9 w-9 border border-border/50">
+                <AvatarFallback className="bg-primary/10 text-primary text-sm font-semibold">
                   {initials}
                 </AvatarFallback>
               </Avatar>
               <div className="flex flex-col items-start overflow-hidden text-left">
-                <span className="w-full truncate text-sm font-semibold">
+                <span className="w-full truncate text-sm font-medium">
                   {user?.name || "Admin User"}
                 </span>
                 <span className="w-full truncate text-xs text-muted-foreground">
@@ -137,8 +140,8 @@ export function AdminSidebar() {
               </div>
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-64" side="right" sideOffset={12}>
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuContent align="end" className="w-56" side="right" sideOffset={12}>
+            <DropdownMenuLabel className="text-xs text-muted-foreground">My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Link href="/" className="flex items-center gap-2">

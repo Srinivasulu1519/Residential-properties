@@ -283,11 +283,11 @@ export function PropertyForm({ property, mode }: PropertyFormProps) {
         <div className="lg:col-span-2 space-y-10">
           {/* Section 1: Basic Information */}
           <section className="space-y-6">
-            <div className="flex items-center gap-3 border-b border-border/60 pb-3">
-              <div className="h-6 w-1 rounded-full bg-primary" />
-              <h2 className="text-lg font-bold tracking-tight text-foreground/80">Basic Information</h2>
+            <div className="flex items-center gap-3 border-b border-border/40 pb-4">
+              <span className="text-xs font-medium text-muted-foreground/50">01</span>
+              <h2 className="text-sm font-semibold tracking-wide text-foreground">Basic Information</h2>
             </div>
-            <Card className="border-none bg-card shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)]">
+            <Card className="border-border/40 bg-card shadow-sm">
               <CardContent className="grid gap-6 pt-8">
                 <div className="space-y-2.5">
                   <Label htmlFor="title" className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground/70">
@@ -348,11 +348,11 @@ export function PropertyForm({ property, mode }: PropertyFormProps) {
 
           {/* Section 2: Pricing & Area */}
           <section className="space-y-6">
-            <div className="flex items-center gap-3 border-b border-border/60 pb-3">
-              <div className="h-6 w-1 rounded-full bg-primary" />
-              <h2 className="text-lg font-bold tracking-tight text-foreground/80">Pricing & Dimensions</h2>
+            <div className="flex items-center gap-3 border-b border-border/40 pb-4">
+              <span className="text-xs font-medium text-muted-foreground/50">02</span>
+              <h2 className="text-sm font-semibold tracking-wide text-foreground">Pricing & Dimensions</h2>
             </div>
-            <Card className="border-none bg-card shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)]">
+            <Card className="border-border/40 bg-card shadow-sm">
               <CardContent className="grid gap-6 pt-8">
                 <div className="grid gap-6 sm:grid-cols-2">
                   <div className="space-y-2.5">
@@ -471,11 +471,11 @@ export function PropertyForm({ property, mode }: PropertyFormProps) {
 
           {/* Section 3: Location Details (Moved here for better width) */}
           <section className="space-y-6">
-            <div className="flex items-center gap-3 border-b border-border/60 pb-3">
-              <div className="h-6 w-1 rounded-full bg-primary" />
-              <h2 className="text-lg font-bold tracking-tight text-foreground/80">Location Details</h2>
+            <div className="flex items-center gap-3 border-b border-border/40 pb-4">
+              <span className="text-xs font-medium text-muted-foreground/50">03</span>
+              <h2 className="text-sm font-semibold tracking-wide text-foreground">Location Details</h2>
             </div>
-            <Card className="border-none bg-card shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)]">
+            <Card className="border-border/40 bg-card shadow-sm">
               <CardContent className="grid gap-6 pt-8">
                 <div className="grid gap-6 sm:grid-cols-2">
                   <div className="space-y-2.5">
@@ -577,12 +577,11 @@ export function PropertyForm({ property, mode }: PropertyFormProps) {
 
           {/* Section 4: Type-Specific Details */}
           <section className="space-y-6">
-            <div className="flex items-center gap-3 border-b border-teal-200 pb-3">
-              <div className="h-6 w-1 rounded-full bg-teal-500" />
-              <h2 className="text-lg font-bold tracking-tight text-foreground/80">{PROPERTY_TYPES.find(t => t.value === type)?.label || type} Details</h2>
-              <span className="text-xs text-teal-600 bg-teal-50 px-2 py-0.5 rounded-full font-medium">Extra context</span>
+            <div className="flex items-center gap-3 border-b border-border/40 pb-4">
+              <span className="text-xs font-medium text-muted-foreground/50">04</span>
+              <h2 className="text-sm font-semibold tracking-wide text-foreground">{PROPERTY_TYPES.find(t => t.value === type)?.label || type} Details</h2>
             </div>
-            <Card className="border-teal-100 bg-gradient-to-br from-teal-50/10 to-white shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)]">
+            <Card className="border-border/40 bg-card shadow-sm">
               <CardContent className="grid gap-6 pt-8">
                 {type === "plot" && (
                   <div className="grid gap-6 sm:grid-cols-3">
@@ -778,7 +777,7 @@ export function PropertyForm({ property, mode }: PropertyFormProps) {
               <div className="h-6 w-1 rounded-full bg-primary" />
               <h2 className="text-lg font-bold tracking-tight text-foreground/80">Amenities & Features</h2>
             </div>
-            <Card className="border-none bg-card shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)]">
+            <Card className="border-border/40 bg-card shadow-sm">
               <CardContent className="space-y-6 pt-8">
                 <div className="flex flex-wrap gap-2">
                   {features.map((f) => (
@@ -818,7 +817,7 @@ export function PropertyForm({ property, mode }: PropertyFormProps) {
               <div className="h-6 w-1 rounded-full bg-emerald-500" />
               <h2 className="text-lg font-bold tracking-tight text-foreground/80">Owner / Contact Details</h2>
             </div>
-            <Card className="border-none bg-card shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)]">
+            <Card className="border-border/40 bg-card shadow-sm">
               <CardContent className="grid gap-6 pt-8">
                 <div className="grid gap-6 sm:grid-cols-3">
                   <div className="space-y-2.5">
@@ -846,7 +845,7 @@ export function PropertyForm({ property, mode }: PropertyFormProps) {
               <div className="h-6 w-1 rounded-full bg-primary" />
               <h2 className="text-lg font-bold tracking-tight text-foreground/80">Media Gallery</h2>
             </div>
-            <Card className="border-none bg-card shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)]">
+            <Card className="border-border/40 bg-card shadow-sm">
               <CardContent className="grid gap-6 pt-8">
                 <div
                   className={cn("flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border/60 bg-muted/20 p-8 transition-all hover:border-primary/40", isUploading && "animate-pulse")}

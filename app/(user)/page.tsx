@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight, Building2, LandPlot, Home, MapPin, Users, TrendingUp, Loader2 } from "lucide-react"
+import { ArrowRight, Building2, LandPlot, Home, MapPin, Users, TrendingUp, Loader2, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { SiteHeader } from "@/components/site-header"
@@ -154,29 +154,43 @@ export default function HomePage() {
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
 
-      {/* Hero */}
-      <section className="relative flex items-center justify-center bg-foreground py-24 lg:py-36">
+      {/* ═══════ HERO ═══════ */}
+      <section className="relative flex min-h-[85vh] items-center justify-center overflow-hidden">
         <Image
           src="/images/hero-bg.jpg"
           alt=""
           fill
-          className="object-cover opacity-30"
+          className="object-cover"
           priority
           sizes="100vw"
         />
-        <div className="relative z-10 mx-auto max-w-4xl px-4 text-center">
-          <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-accent drop-shadow-sm">
-            Elevate Your Standard of Living
+        {/* Elegant overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/35 to-black/55" />
+
+        <div className="relative z-10 mx-auto w-full max-w-4xl px-6 py-32 text-center lg:px-8">
+          {/* Tagline */}
+          <p className="mb-6 text-xs font-medium uppercase tracking-[0.25em] text-white/60">
+            Premium Real Estate &bull; India
           </p>
-          <h1 className="mb-6 font-serif text-4xl font-bold leading-tight text-white md:text-5xl lg:text-6xl text-balance drop-shadow-xl" style={{ textShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
-            {isAuthenticated && user ? `Welcome back, ${user.name.split(' ')[0]}!` : "Discover Properties That Define You"}
+
+          {/* Main Heading */}
+          <h1 className="mx-auto max-w-3xl font-serif text-4xl font-bold leading-[1.1] text-white md:text-5xl lg:text-6xl text-balance">
+            {isAuthenticated && user ? `Welcome back, ${user.name.split(' ')[0]}!` : "Discover Spaces That Define Your Lifestyle"}
           </h1>
-          <form onSubmit={handleSearch} className="relative group mx-auto mb-8 w-full max-w-2xl">
+
+          {/* Subtext */}
+          <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-white/60 md:text-lg">
+            From luxury villas to strategic plots, PropVista brings the finest properties designed for modern living.
+          </p>
+
+          {/* Search */}
+          <form onSubmit={handleSearch} className="relative mx-auto mt-10 w-full max-w-2xl">
             <div className="relative flex items-center">
+              <Search className="absolute left-5 h-5 w-5 text-white/40 pointer-events-none" />
               <input
                 type="text"
-                placeholder="Search by city, location or property name..."
-                className="h-14 w-full rounded-full border-none bg-white/10 px-6 py-4 text-white placeholder-white/50 backdrop-blur-md focus:bg-white/20 focus:outline-none focus:ring-2 focus:ring-accent/50"
+                placeholder="Search by city, location or property type..."
+                className="h-14 w-full rounded-full border border-white/15 bg-white/10 pl-13 pr-32 text-white placeholder-white/40 backdrop-blur-xl transition-all duration-300 focus:border-white/30 focus:bg-white/15 focus:outline-none"
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value)
@@ -188,7 +202,7 @@ export default function HomePage() {
               />
               <Button
                 type="submit"
-                className="absolute right-1.5 h-11 rounded-full px-6"
+                className="absolute right-1.5 h-11 rounded-full px-6 bg-white text-foreground hover:bg-white/90 font-medium"
               >
                 Search
               </Button>
@@ -196,13 +210,13 @@ export default function HomePage() {
 
             {/* Suggestions Dropdown */}
             {showSuggestions && suggestions.length > 0 && (
-              <div className="absolute top-full left-0 right-0 mt-2 overflow-hidden rounded-2xl bg-white border border-border shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                <div className="py-2">
+              <div className="absolute top-full left-0 right-0 mt-2 overflow-hidden rounded-xl bg-white border border-border/60 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="py-1.5">
                   {suggestions.map((suggestion, index) => (
                     <button
                       key={`${suggestion.type}-${suggestion.value}`}
                       type="button"
-                      className={`flex w-full items-center gap-3 px-6 py-3 text-left transition-colors ${index === activeIndex ? 'bg-primary/5 text-primary' : 'hover:bg-slate-50 text-slate-700'
+                      className={`flex w-full items-center gap-3 px-5 py-3 text-left transition-colors ${index === activeIndex ? 'bg-secondary text-foreground' : 'hover:bg-secondary/50 text-foreground'
                         }`}
                       onClick={() => {
                         setSearchQuery(suggestion.label)
@@ -210,14 +224,14 @@ export default function HomePage() {
                       }}
                     >
                       {suggestion.type === 'type' ? (
-                        <Building2 className="h-4 w-4 text-primary" />
+                        <Building2 className="h-4 w-4 text-muted-foreground" />
                       ) : (
-                        <MapPin className="h-4 w-4 text-primary" />
+                        <MapPin className="h-4 w-4 text-muted-foreground" />
                       )}
                       <div className="flex flex-col">
-                        <span className="font-medium">{suggestion.label}</span>
-                        <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold text-balance">
-                          {suggestion.type === 'type' ? 'Property Category' : 'Location'}
+                        <span className="text-sm font-medium">{suggestion.label}</span>
+                        <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
+                          {suggestion.type === 'type' ? 'Category' : 'Location'}
                         </span>
                       </div>
                     </button>
@@ -226,11 +240,10 @@ export default function HomePage() {
               </div>
             )}
           </form>
-          <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed text-teal-50 drop-shadow-md">
-            Step into a world of exclusive real estate. From luxury villas to strategic plots, PropVista brings the finest properties designed for modern living directly to you.
-          </p>
-          <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-            <Button size="lg" className="gap-2" asChild>
+
+          {/* CTAs */}
+          <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+            <Button size="lg" className="h-12 gap-2 rounded-full px-8" asChild>
               <Link href="/properties">
                 Browse Properties
                 <ArrowRight className="h-4 w-4" />
@@ -240,7 +253,7 @@ export default function HomePage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-background/30 bg-transparent text-background hover:bg-background/10 hover:text-background"
+                className="h-12 rounded-full border-white/20 bg-transparent px-8 text-white hover:bg-white/10 hover:text-white"
                 asChild
               >
                 <Link href="/auth/login">Login / Register</Link>
@@ -249,7 +262,7 @@ export default function HomePage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-background/30 bg-transparent text-background hover:bg-background/10 hover:text-background"
+                className="h-12 rounded-full border-white/20 bg-transparent px-8 text-white hover:bg-white/10 hover:text-white"
                 asChild
               >
                 <Link href={user?.role === "admin" ? "/admin/dashboard" : "/dashboard"}>
@@ -261,68 +274,79 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Categories */}
-      <section className="mx-auto w-full max-w-7xl px-4 py-16 lg:px-8 lg:py-24">
-        <div className="mb-10 text-center">
-          <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-primary">
+      {/* ═══════ TRUST STRIP ═══════ */}
+      <section className="border-b border-border/40">
+        <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-8 px-6 py-8 sm:gap-14 lg:gap-20">
+          {[
+            "Verified Listings",
+            "Transparent Pricing",
+            "Premium Support",
+          ].map((item) => (
+            <div key={item} className="flex items-center gap-2.5">
+              <div className="h-1.5 w-1.5 rounded-full bg-primary/60" />
+              <span className="text-sm font-medium text-muted-foreground">{item}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══════ CATEGORIES ═══════ */}
+      <section className="mx-auto w-full max-w-7xl px-6 py-20 lg:px-8 lg:py-28">
+        <div className="mb-14 text-center">
+          <p className="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
             Browse by Category
           </p>
-          <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl text-balance">
+          <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl">
             Explore Property Types
           </h2>
         </div>
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-5 md:grid-cols-3">
           {CATEGORIES.map((cat) => (
             <Link
               key={cat.type}
               href={`/properties?type=${cat.type}`}
               className="group block"
             >
-              <TiltCard className="h-full">
-                <Card className="h-full overflow-hidden border-border bg-card/50 backdrop-blur-sm transition-all duration-300 shadow-xl group-hover:shadow-emerald-500/20">
-                  <div className="relative aspect-[16/9] overflow-hidden">
-                    <Image
-                      src={cat.image}
-                      alt={cat.label}
-                      fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-110"
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/90 via-black/40 to-transparent" />
-                    <div className="absolute bottom-4 left-4 right-4 transform transition-transform duration-500 translate-y-2 group-hover:translate-y-0">
-                      <div className="flex items-center gap-2 text-white">
-                        <cat.icon className="h-6 w-6 text-emerald-400 drop-shadow-md" />
-                        <h3 className="font-serif text-2xl font-bold drop-shadow-md">{cat.label}</h3>
-                      </div>
-                      <p className="mt-2 text-sm text-teal-100 opacity-90 transition-opacity duration-300">{cat.description}</p>
-                      <div className="mt-3 flex items-center justify-between">
-                        <span className="text-xs font-semibold text-accent bg-accent/20 px-2 py-1 rounded-full backdrop-blur-md">
-                          {loading ? "..." : `${counts[cat.type]} ${counts[cat.type] === 1 ? "Listing" : "Listings"}`}
-                        </span>
-                        <ArrowRight className="h-4 w-4 text-white opacity-0 -translate-x-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-x-0" />
-                      </div>
-                    </div>
+              <div className="relative aspect-[4/5] overflow-hidden rounded-xl">
+                <Image
+                  src={cat.image}
+                  alt={cat.label}
+                  fill
+                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 p-6">
+                  <h3 className="font-serif text-2xl font-bold text-white">{cat.label}</h3>
+                  <p className="mt-1.5 text-sm text-white/60">{cat.description}</p>
+                  <div className="mt-4 flex items-center justify-between">
+                    <span className="text-xs font-medium text-white/50">
+                      {loading ? "..." : `${counts[cat.type]} ${counts[cat.type] === 1 ? "listing" : "listings"}`}
+                    </span>
+                    <span className="flex items-center gap-1 text-xs font-medium text-white/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                      Explore <ArrowRight className="h-3 w-3" />
+                    </span>
                   </div>
-                </Card>
-              </TiltCard>
+                </div>
+              </div>
             </Link>
           ))}
         </div>
       </section>
 
-      {/* Featured */}
-      <section className="bg-secondary/50 py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="mb-10 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
+      {/* ═══════ FEATURED ═══════ */}
+      <section className="border-y border-border/40 bg-secondary/30 py-20 lg:py-28">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mb-14 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
             <div>
-              <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-primary">
-                Featured Listings
+              <p className="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                Featured Collection
               </p>
-              <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl text-balance">
-                Available Properties
+              <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl">
+                Properties Worth Discovering
               </h2>
             </div>
-            <Button variant="outline" className="gap-2" asChild>
+            <Button variant="ghost" className="gap-2 text-muted-foreground hover:text-foreground" asChild>
               <Link href="/properties">
                 View All
                 <ArrowRight className="h-4 w-4" />
@@ -330,105 +354,129 @@ export default function HomePage() {
             </Button>
           </div>
           {loading ? (
-            <div className="flex items-center justify-center py-20">
-              <div className="flex flex-col items-center gap-3">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <div className="flex items-center justify-center py-24">
+              <div className="flex flex-col items-center gap-4">
+                <Loader2 className="h-6 w-6 animate-spin text-primary" />
                 <p className="text-sm text-muted-foreground">Loading properties...</p>
               </div>
             </div>
-          ) : (
+          ) : featured.length > 0 ? (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {featured.map((property) => (
                 <PropertyCard key={property.id} property={property} />
               ))}
             </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-24 text-center">
+              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-secondary">
+                <Building2 className="h-7 w-7 text-muted-foreground" />
+              </div>
+              <h3 className="font-serif text-xl font-semibold text-foreground">No properties available yet</h3>
+              <p className="mt-2 max-w-sm text-sm text-muted-foreground">
+                We&apos;re currently adding verified properties. Please check back soon.
+              </p>
+            </div>
           )}
         </div>
       </section>
 
-      {/* PropVista Advantage */}
-      <section className="mx-auto w-full max-w-7xl px-4 py-16 lg:px-8 lg:py-24">
-        <div className="mb-14 text-center">
-          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-primary drop-shadow-sm">
-            Why Choose Us
-          </p>
-          <h2 className="font-serif text-3xl font-bold text-foreground md:text-5xl text-balance">
-            The PropVista Advantage
-          </h2>
-        </div>
-        <div className="grid gap-8 md:grid-cols-3">
-          {[
-            {
-              title: "Verified Listings",
-              description: "Every property on our platform goes through a rigorous physical and legal verification process to ensure complete peace of mind for buyers.",
-              icon: "🛡️"
-            },
-            {
-              title: "Transparent Pricing",
-              description: "No hidden fees or surprise commissions. We believe in 100% transparency between buyers, sellers, and tenants.",
-              icon: "💎"
-            },
-            {
-              title: "Premium Support",
-              description: "Our dedicated relationship managers are available 24/7 to guide you through property visits, paperwork, and loans.",
-              icon: "🤝"
-            }
-          ].map((adv, i) => (
-            <TiltCard key={adv.title} className="h-full">
-              <div className="relative h-full overflow-hidden rounded-2xl border border-emerald-100 bg-gradient-to-br from-white to-emerald-50/50 p-8 shadow-xl transition-all duration-300 hover:shadow-emerald-500/20">
-                <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-emerald-100/50 blur-2xl" />
-                <div className="relative z-10">
-                  <span className="mb-6 inline-block text-5xl filter drop-shadow-md">{adv.icon}</span>
-                  <h3 className="mb-4 font-serif text-2xl font-bold text-slate-800">{adv.title}</h3>
-                  <p className="text-slate-600 leading-relaxed">{adv.description}</p>
+      {/* ═══════ WHY PROPVISTA ═══════ */}
+      <section className="mx-auto w-full max-w-7xl px-6 py-20 lg:px-8 lg:py-28">
+        <div className="grid items-center gap-16 lg:grid-cols-2">
+          {/* Left — Image */}
+          <div className="relative aspect-[4/5] overflow-hidden rounded-xl lg:aspect-[3/4]">
+            <Image
+              src="/images/villa-category.jpg"
+              alt="Premium property"
+              fill
+              className="object-cover"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+            />
+          </div>
+
+          {/* Right — Content */}
+          <div>
+            <p className="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+              Why PropVista
+            </p>
+            <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl">
+              The PropVista Advantage
+            </h2>
+            <div className="mt-10 space-y-8">
+              {[
+                {
+                  number: "01",
+                  title: "Verified Listings",
+                  description: "Every property goes through rigorous physical and legal verification for complete peace of mind.",
+                },
+                {
+                  number: "02",
+                  title: "Transparent Pricing",
+                  description: "No hidden fees or surprise commissions. 100% transparency between buyers, sellers, and tenants.",
+                },
+                {
+                  number: "03",
+                  title: "Premium Support",
+                  description: "Dedicated relationship managers guide you through visits, paperwork, and loans.",
+                },
+              ].map((adv) => (
+                <div key={adv.number} className="flex gap-5">
+                  <span className="mt-0.5 text-sm font-medium text-primary/50">{adv.number}</span>
+                  <div>
+                    <h3 className="font-serif text-lg font-semibold text-foreground">{adv.title}</h3>
+                    <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{adv.description}</p>
+                  </div>
                 </div>
-              </div>
-            </TiltCard>
-          ))}
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="mx-auto w-full max-w-7xl px-4 py-16 lg:px-8 lg:py-24">
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            {
-              icon: Building2,
-              value: loading ? "..." : properties.length,
-              label: "Total Properties",
-            },
-            {
-              icon: MapPin,
-              value: loading ? "..." : new Set(properties.map((p) => p.city)).size,
-              label: "Cities Covered",
-            },
-            {
-              icon: Users,
-              value: "500+",
-              label: "Happy Customers",
-            },
-            {
-              icon: TrendingUp,
-              value: loading ? "..." : properties.filter((p) => p.status === "available").length,
-              label: "Available Now",
-            },
-          ].map((stat, i) => (
-            <TiltCard key={stat.label}>
-              <Card className="h-full border-border bg-gradient-to-b from-card to-secondary/20 hover:from-card hover:to-emerald-50 transition-colors shadow-lg shadow-emerald-500/5 duration-500 overflow-hidden relative group">
-                {/* Decorative background element */}
-                <div className="absolute -inset-x-0 -top-20 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 h-32 bg-gradient-to-b from-emerald-500/10 to-transparent blur-2xl" />
-                <CardContent className="flex flex-col items-center gap-3 p-8 relative z-10">
-                  <div className="mb-2 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-50 shadow-inner group-hover:scale-110 transition-transform duration-500">
-                    <stat.icon className="h-7 w-7 text-emerald-600 drop-shadow-sm" />
-                  </div>
-                  <p className="font-serif text-4xl font-bold bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-500">
-                    {stat.value}
-                  </p>
-                  <p className="text-sm font-medium tracking-wide text-muted-foreground uppercase">{stat.label}</p>
-                </CardContent>
-              </Card>
-            </TiltCard>
-          ))}
+      {/* ═══════ STATS ═══════ */}
+      <section className="border-t border-border/40">
+        <div className="mx-auto max-w-5xl px-6 py-20 lg:px-8 lg:py-24">
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { value: loading ? "—" : properties.length, label: "Properties" },
+              { value: loading ? "—" : new Set(properties.map((p) => p.city)).size, label: "Cities" },
+              { value: "500+", label: "Happy Clients" },
+              { value: loading ? "—" : properties.filter((p) => p.status === "available").length, label: "Available Now" },
+            ].map((stat) => (
+              <div key={stat.label} className="text-center">
+                <p className="font-serif text-4xl font-bold text-foreground md:text-5xl">
+                  {stat.value}
+                </p>
+                <p className="mt-2 text-xs font-medium uppercase tracking-widest text-muted-foreground">
+                  {stat.label}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════ FINAL CTA ═══════ */}
+      <section className="bg-[#1a2e2a] py-20 lg:py-28">
+        <div className="mx-auto max-w-3xl px-6 text-center lg:px-8">
+          <h2 className="font-serif text-3xl font-bold text-white md:text-4xl text-balance">
+            Your next address is waiting
+          </h2>
+          <p className="mx-auto mt-4 max-w-lg text-base text-white/50">
+            Whether you&apos;re looking for your dream home or a strategic investment, we&apos;re here to help you find it.
+          </p>
+          <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+            <Button size="lg" className="h-12 rounded-full px-8 bg-white text-foreground hover:bg-white/90" asChild>
+              <Link href="/properties">
+                Explore Properties
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" className="h-12 rounded-full border-white/20 px-8 text-white hover:bg-white/10 hover:text-white bg-transparent" asChild>
+              <Link href={isAuthenticated ? "/post-property" : "/auth/register"}>
+                List Your Property
+              </Link>
+            </Button>
+          </div>
         </div>
       </section>
 

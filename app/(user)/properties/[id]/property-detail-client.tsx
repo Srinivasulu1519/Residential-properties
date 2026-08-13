@@ -33,20 +33,20 @@ import { useCallback, useEffect } from "react"
 import { toast } from "sonner"
 
 const statusColors: Record<string, string> = {
-  available: "bg-emerald-600 text-white",
-  sold: "bg-red-500 text-white",
-  upcoming: "bg-amber-500 text-white",
+  available: "bg-emerald-50 text-emerald-700 border border-emerald-200/60",
+  sold: "bg-red-50 text-red-700 border border-red-200/60",
+  upcoming: "bg-amber-50 text-amber-700 border border-amber-200/60",
 }
 
 const typeColors: Record<string, string> = {
-  plot: "bg-sky-100 text-sky-800",
-  apartment: "bg-violet-100 text-violet-800",
-  villa: "bg-rose-100 text-rose-800",
-  farmhouse: "bg-amber-100 text-amber-800",
-  agriculture_land: "bg-lime-100 text-lime-800",
-  rent: "bg-teal-100 text-teal-800",
-  commercial: "bg-emerald-100 text-emerald-800",
-  independent_house: "bg-orange-100 text-orange-800",
+  plot: "bg-secondary text-foreground/70",
+  apartment: "bg-secondary text-foreground/70",
+  villa: "bg-secondary text-foreground/70",
+  farmhouse: "bg-secondary text-foreground/70",
+  agriculture_land: "bg-secondary text-foreground/70",
+  rent: "bg-secondary text-foreground/70",
+  commercial: "bg-secondary text-foreground/70",
+  independent_house: "bg-secondary text-foreground/70",
 }
 
 import { useAdminAuth } from "@/lib/admin-auth"
@@ -128,9 +128,9 @@ export function PropertyDetailClient({ propertyId }: { propertyId: string }) {
   return (
     <main className="flex-1">
       {/* Breadcrumb */}
-      <div className="border-b border-border bg-secondary/30 px-4 py-4 lg:px-8">
+      <div className="border-b border-border/40 px-6 py-5 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <Button variant="ghost" size="sm" className="gap-2" asChild>
+          <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-foreground" asChild>
             <Link href="/properties">
               <ArrowLeft className="h-4 w-4" />
               Back to Properties
@@ -139,12 +139,12 @@ export function PropertyDetailClient({ propertyId }: { propertyId: string }) {
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8">
-        <div className="grid gap-8 lg:grid-cols-3">
+      <div className="mx-auto max-w-7xl px-6 py-10 lg:px-8">
+        <div className="grid gap-10 lg:grid-cols-3">
           {/* Left Column - Images & Details */}
           <div className="lg:col-span-2">
             {/* Image Gallery Slider */}
-            <div className="mb-8 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-sm relative group">
+            <div className="mb-8 overflow-hidden rounded-xl border border-border/40 bg-muted/20 relative group">
               <div className="overflow-hidden" ref={emblaRef}>
                 <div className="flex">
                   {images.map((img, i) => (
@@ -240,21 +240,21 @@ export function PropertyDetailClient({ propertyId }: { propertyId: string }) {
             )}
 
             {/* Title & Badges */}
-            <div className="mb-6">
+            <div className="mb-8">
               <div className="mb-3 flex flex-wrap gap-2">
-                <Badge className={cn("text-xs", typeColors[property.type])}>
+                <Badge className={cn("text-xs px-2.5 py-0.5 rounded-full", typeColors[property.type])} variant="secondary">
                   {property.type.charAt(0).toUpperCase() + property.type.slice(1)}
                 </Badge>
-                <Badge className={cn("text-xs", statusColors[property.status])}>
+                <Badge className={cn("text-xs px-2.5 py-0.5 rounded-full", statusColors[property.status])} variant="secondary">
                   {property.status.charAt(0).toUpperCase() + property.status.slice(1)}
                 </Badge>
               </div>
-              <h1 className="mb-2 font-serif text-2xl font-bold text-foreground md:text-3xl text-balance">
+              <h1 className="mb-3 font-serif text-2xl font-bold text-foreground md:text-3xl lg:text-4xl text-balance">
                 {property.title}
               </h1>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <MapPin className="h-4 w-4 shrink-0" />
-                <span>
+                <span className="text-sm">
                   {property.location
                     ? `${property.location} · ${property.city}`
                     : property.fullAddress}
@@ -263,9 +263,9 @@ export function PropertyDetailClient({ propertyId }: { propertyId: string }) {
             </div>
 
             {/* Key Specs */}
-            <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-              <Card className="border-border">
-                <CardContent className="flex flex-col items-center gap-1 p-4">
+            <div className="mb-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
+              <Card className="border-border/40">
+                <CardContent className="flex flex-col items-center gap-1.5 p-5">
                   <Maximize className="h-5 w-5 text-primary" />
                   <p className="text-lg font-bold text-foreground">
                     {property.area.toLocaleString()}
@@ -310,19 +310,19 @@ export function PropertyDetailClient({ propertyId }: { propertyId: string }) {
             </div>
 
             {/* Description */}
-            <Card className="mb-8 border-border">
+            <Card className="mb-8 border-border/40">
               <CardHeader>
                 <CardTitle className="font-serif text-xl">Description</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="leading-relaxed text-muted-foreground">
+                <p className="leading-relaxed text-muted-foreground max-w-prose">
                   {property.description}
                 </p>
               </CardContent>
             </Card>
 
             {/* Features */}
-            <Card className="border-border">
+            <Card className="border-border/40">
               <CardHeader>
                 <CardTitle className="font-serif text-xl">
                   Features & Amenities
@@ -342,7 +342,7 @@ export function PropertyDetailClient({ propertyId }: { propertyId: string }) {
 
             {/* Additional Details (Metadata) */}
             {property.metadata && Object.keys(property.metadata as object).length > 0 && (
-              <Card className="mt-8 border-border">
+              <Card className="mt-8 border-border/40">
                 <CardHeader>
                   <CardTitle className="font-serif text-xl">
                     Additional Details
@@ -374,12 +374,12 @@ export function PropertyDetailClient({ propertyId }: { propertyId: string }) {
           <div className="lg:col-span-1">
             <div className="sticky top-20 flex flex-col gap-6">
               {/* Price Card */}
-              <Card className="border-border">
+              <Card className="border-border/40">
                 <CardContent className="p-6">
-                  <p className="mb-1 text-sm text-muted-foreground">
+                  <p className="mb-1 text-xs font-medium uppercase tracking-widest text-muted-foreground">
                     {property.type === "rent" ? "Monthly Rent" : "Price"}
                   </p>
-                  <p className="mb-1 font-serif text-3xl font-bold text-primary">
+                  <p className="mb-1 font-serif text-3xl font-bold text-foreground">
                     {"Rs. "}{formatPrice(property.type === "rent" && property.monthlyRent ? property.monthlyRent : property.price)}
                   </p>
                   <p className="text-xs text-muted-foreground">
@@ -420,7 +420,7 @@ export function PropertyDetailClient({ propertyId }: { propertyId: string }) {
 
               {/* Type-Specific Details Card */}
             {(property.furnishing || property.constructionStatus || property.facing || property.floor || property.parking || property.gatedCommunity || property.soilType || property.tenantType) && (
-                <Card className="border-border">
+                <Card className="border-border/40">
                   <CardHeader>
                     <CardTitle className="font-serif text-lg">
                       Property Details
@@ -531,8 +531,8 @@ export function PropertyDetailClient({ propertyId }: { propertyId: string }) {
 
               {/* Generic Contact Card / Interested Button */}
               {property.type !== "rent" && (
-                <Card className="border-border overflow-hidden">
-                  <CardHeader className="bg-muted/30">
+                <Card className="border-border/40 overflow-hidden">
+                  <CardHeader className="bg-secondary/30 border-b border-border/30">
                     <CardTitle className="font-serif text-lg">
                       Interested in this property?
                     </CardTitle>

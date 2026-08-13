@@ -3,11 +3,12 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { Building2, Lock, Eye, EyeOff, Mail, User, Loader2 } from "lucide-react"
+import Image from "next/image"
+import { Lock, Eye, EyeOff, Mail, User, Loader2, Phone } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
+import { PropVistaLogo } from "@/components/propvista-logo"
 import { useAdminAuth } from "@/lib/admin-auth"
 import { toast } from "sonner"
 
@@ -56,83 +57,102 @@ export default function UserRegisterPage() {
     }
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-secondary/30 px-4">
-            <Card className="w-full max-w-md border-border">
-                <CardHeader className="text-center">
-                    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-primary">
-                        <Building2 className="h-7 w-7 text-primary-foreground" />
+        <div className="flex min-h-screen">
+            {/* Left — Brand panel (hidden on mobile) */}
+            <div className="hidden lg:flex lg:w-1/2 relative items-center justify-center bg-[#1a2e2a] overflow-hidden">
+                <Image
+                    src="/images/hero-bg.jpg"
+                    alt=""
+                    fill
+                    className="object-cover opacity-20"
+                />
+                <div className="relative z-10 max-w-md px-12 text-center">
+                    <PropVistaLogo size="lg" variant="light" />
+                    <p className="mt-6 text-sm leading-relaxed text-white/50">
+                        Join thousands of users discovering premium properties. Start your property journey today.
+                    </p>
+                </div>
+            </div>
+
+            {/* Right — Form */}
+            <div className="flex flex-1 items-center justify-center px-6 py-12">
+                <div className="w-full max-w-sm">
+                    <div className="mb-8 lg:hidden">
+                        <PropVistaLogo size="md" />
                     </div>
-                    <CardTitle className="font-serif text-2xl">Create Account</CardTitle>
-                    <CardDescription>
-                        Sign up to browse and save your favorite properties.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
+
+                    <div className="mb-8">
+                        <h1 className="font-serif text-2xl font-bold text-foreground">Create Account</h1>
+                        <p className="mt-2 text-sm text-muted-foreground">
+                            Sign up to browse and save your favorite properties.
+                        </p>
+                    </div>
+
                     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                         <div className="flex flex-col gap-2">
-                            <Label htmlFor="name">Full Name</Label>
+                            <Label htmlFor="name" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Full Name</Label>
                             <div className="relative">
-                                <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                <User className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
                                 <Input
                                     id="name"
                                     type="text"
                                     placeholder="John Doe"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
-                                    className="pl-10"
+                                    className="h-12 pl-11 bg-secondary/30 border-border/40 focus:bg-background"
                                     autoFocus
                                     disabled={isLoading}
                                 />
                             </div>
                         </div>
                         <div className="flex flex-col gap-2">
-                            <Label htmlFor="email">Email</Label>
+                            <Label htmlFor="email" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Email</Label>
                             <div className="relative">
-                                <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                <Mail className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
                                 <Input
                                     id="email"
                                     type="email"
                                     placeholder="you@example.com"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="pl-10"
+                                    className="h-12 pl-11 bg-secondary/30 border-border/40 focus:bg-background"
                                     disabled={isLoading}
                                 />
                             </div>
                         </div>
                         <div className="flex flex-col gap-2">
-                            <Label htmlFor="phone">Phone Number</Label>
+                            <Label htmlFor="phone" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Phone Number</Label>
                             <div className="relative">
-                                <Building2 className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                <Phone className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
                                 <Input
                                     id="phone"
                                     type="tel"
                                     placeholder="+91 9876543210"
                                     value={phone}
                                     onChange={(e) => setPhone(e.target.value)}
-                                    className="pl-10"
+                                    className="h-12 pl-11 bg-secondary/30 border-border/40 focus:bg-background"
                                     disabled={isLoading}
                                 />
                             </div>
                         </div>
                         <div className="flex flex-col gap-2">
-                            <Label htmlFor="password">Password</Label>
+                            <Label htmlFor="password" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Password</Label>
                             <div className="relative">
-                                <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                <Lock className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
                                 <Input
                                     id="password"
                                     type={showPassword ? "text" : "password"}
                                     placeholder="At least 6 characters"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="pl-10 pr-10"
+                                    className="h-12 pl-11 pr-11 bg-secondary/30 border-border/40 focus:bg-background"
                                     disabled={isLoading}
                                 />
                                 <Button
                                     type="button"
                                     variant="ghost"
                                     size="icon"
-                                    className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2"
+                                    className="absolute right-1.5 top-1/2 h-8 w-8 -translate-y-1/2 text-muted-foreground/50"
                                     onClick={() => setShowPassword(!showPassword)}
                                     aria-label={showPassword ? "Hide password" : "Show password"}
                                 >
@@ -147,7 +167,7 @@ export default function UserRegisterPage() {
                                 <p className="text-sm text-destructive">{error}</p>
                             )}
                         </div>
-                        <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+                        <Button type="submit" className="w-full h-12 rounded-lg mt-1" disabled={isLoading}>
                             {isLoading ? (
                                 <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -159,13 +179,13 @@ export default function UserRegisterPage() {
                         </Button>
                         <p className="text-center text-sm text-muted-foreground">
                             Already have an account?{" "}
-                            <Link href="/auth/login" className="font-medium text-primary hover:underline">
+                            <Link href="/auth/login" className="font-medium text-primary hover:text-primary/80 transition-colors">
                                 Sign in
                             </Link>
                         </p>
                     </form>
-                </CardContent>
-            </Card>
+                </div>
+            </div>
         </div>
     )
 }

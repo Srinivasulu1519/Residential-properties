@@ -3,11 +3,12 @@
 import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
-import { Building2, Lock, Eye, EyeOff, Loader2 } from "lucide-react"
+import { Lock, Eye, EyeOff, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
+import { PropVistaLogo } from "@/components/propvista-logo"
 import { toast } from "sonner"
 
 export default function ResetPasswordPage() {
@@ -24,14 +25,21 @@ export default function ResetPasswordPage() {
 
     if (!token) {
         return (
-            <div className="flex min-h-screen items-center justify-center bg-secondary/30 px-4">
-                <Card className="w-full max-w-md border-border text-center p-6 space-y-4">
-                    <CardTitle className="text-xl">Invalid or Missing Token</CardTitle>
-                    <p className="text-muted-foreground text-sm">You must use a valid password reset link from your email.</p>
-                    <Link href="/auth/forgot-password">
-                        <Button className="w-full mt-4">Request New Link</Button>
-                    </Link>
-                </Card>
+            <div className="flex min-h-screen items-center justify-center bg-background px-6">
+                <div className="w-full max-w-sm">
+                    <div className="mb-8 flex justify-center">
+                        <PropVistaLogo size="md" />
+                    </div>
+                    <Card className="border-border/40 text-center">
+                        <CardContent className="p-8 space-y-4">
+                            <CardTitle className="font-serif text-xl">Invalid or Missing Token</CardTitle>
+                            <p className="text-muted-foreground text-sm">You must use a valid password reset link from your email.</p>
+                            <Link href="/auth/forgot-password">
+                                <Button className="w-full h-12 rounded-lg mt-4">Request New Link</Button>
+                            </Link>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
         )
     }
@@ -75,88 +83,91 @@ export default function ResetPasswordPage() {
     }
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-secondary/30 px-4">
-            <Card className="w-full max-w-md border-border">
-                <CardHeader className="text-center">
-                    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-primary">
-                        <Building2 className="h-7 w-7 text-primary-foreground" />
-                    </div>
-                    <CardTitle className="font-serif text-2xl">Set New Password</CardTitle>
-                    <CardDescription>
-                        Please enter your new password below.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    {!isSuccess ? (
-                        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                            <div className="flex flex-col gap-2">
-                                <Label htmlFor="password">New Password</Label>
-                                <div className="relative">
-                                    <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                                    <Input
-                                        id="password"
-                                        type={showPassword ? "text" : "password"}
-                                        placeholder="Enter password (min 6 chars)"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        className="pl-10 pr-10"
-                                        disabled={isLoading}
-                                        required
-                                        autoFocus
-                                    />
-                                    <Button
-                                        type="button"
-                                        variant="ghost"
-                                        size="icon"
-                                        className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                    >
-                                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                                    </Button>
-                                </div>
-                            </div>
-                            
-                            <div className="flex flex-col gap-2">
-                                <Label htmlFor="confirmPassword">Confirm Password</Label>
-                                <div className="relative">
-                                    <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                                    <Input
-                                        id="confirmPassword"
-                                        type={showPassword ? "text" : "password"}
-                                        placeholder="Confirm your new password"
-                                        value={confirmPassword}
-                                        onChange={(e) => setConfirmPassword(e.target.value)}
-                                        className="pl-10"
-                                        disabled={isLoading}
-                                        required
-                                    />
-                                </div>
-                            </div>
+        <div className="flex min-h-screen items-center justify-center bg-background px-6">
+            <div className="w-full max-w-sm">
+                <div className="mb-8 flex justify-center">
+                    <PropVistaLogo size="md" />
+                </div>
 
-                            <Button type="submit" className="w-full mt-2" size="lg" disabled={isLoading}>
-                                {isLoading ? (
-                                    <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Updating...
-                                    </>
-                                ) : (
-                                    "Update Password"
-                                )}
-                            </Button>
-                        </form>
-                    ) : (
-                        <div className="text-center space-y-4 py-4">
-                            <div className="mx-auto w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
-                                <Lock className="h-6 w-6 text-green-600" />
+                <Card className="border-border/40">
+                    <CardHeader className="text-center pb-4">
+                        <CardTitle className="font-serif text-2xl">Set New Password</CardTitle>
+                        <CardDescription className="mt-1.5">
+                            Please enter your new password below.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        {!isSuccess ? (
+                            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+                                <div className="flex flex-col gap-2">
+                                    <Label htmlFor="password" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">New Password</Label>
+                                    <div className="relative">
+                                        <Lock className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
+                                        <Input
+                                            id="password"
+                                            type={showPassword ? "text" : "password"}
+                                            placeholder="Enter password (min 6 chars)"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            className="h-12 pl-11 pr-11 bg-secondary/30 border-border/40 focus:bg-background"
+                                            disabled={isLoading}
+                                            required
+                                            autoFocus
+                                        />
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="icon"
+                                            className="absolute right-1.5 top-1/2 h-8 w-8 -translate-y-1/2 text-muted-foreground/50"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                        >
+                                            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                        </Button>
+                                    </div>
+                                </div>
+                                
+                                <div className="flex flex-col gap-2">
+                                    <Label htmlFor="confirmPassword" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Confirm Password</Label>
+                                    <div className="relative">
+                                        <Lock className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
+                                        <Input
+                                            id="confirmPassword"
+                                            type={showPassword ? "text" : "password"}
+                                            placeholder="Confirm your new password"
+                                            value={confirmPassword}
+                                            onChange={(e) => setConfirmPassword(e.target.value)}
+                                            className="h-12 pl-11 bg-secondary/30 border-border/40 focus:bg-background"
+                                            disabled={isLoading}
+                                            required
+                                        />
+                                    </div>
+                                </div>
+
+                                <Button type="submit" className="w-full h-12 rounded-lg mt-1" disabled={isLoading}>
+                                    {isLoading ? (
+                                        <>
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            Updating...
+                                        </>
+                                    ) : (
+                                        "Update Password"
+                                    )}
+                                </Button>
+                            </form>
+                        ) : (
+                            <div className="text-center space-y-4 py-6">
+                                <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                                    <Lock className="h-5 w-5 text-primary" />
+                                </div>
+                                <h3 className="font-serif text-lg font-medium text-foreground">Password Updated</h3>
+                                <p className="text-sm text-muted-foreground">
+                                    You will be redirected to the login page momentarily.
+                                </p>
                             </div>
-                            <h3 className="text-lg font-medium">Password Updated Successfully</h3>
-                            <p className="text-sm text-muted-foreground">
-                                You will be redirected to the login page momentarily.
-                            </p>
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
+                        )}
+                    </CardContent>
+                </Card>
+            </div>
         </div>
     )
 }

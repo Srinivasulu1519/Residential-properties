@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
+import { revokeAllUserTokens } from "@/lib/token-blacklist"
 
 export async function POST(request: NextRequest) {
     try {
@@ -49,6 +50,11 @@ export async function POST(request: NextRequest) {
                 resetTokenExpiry: null
             }
         })
+
+        // ─── User-Level Revocation ───────────────────────────────
+        // Invalidate ALL existing tokens for this user.
+        // Any token issued before this moment will be rejected.
+        revokeAllUserTokens(user.id)
 
         return NextResponse.json({
             success: true,

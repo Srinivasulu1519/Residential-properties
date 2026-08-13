@@ -329,28 +329,28 @@ export default function UserDashboardPage() {
             label: "Saved Properties",
             value: savedCount,
             icon: Heart,
-            gradient: "from-rose-500 to-pink-600",
-            bg: "bg-gradient-to-br from-rose-50 to-pink-50",
-            iconBg: "bg-gradient-to-br from-rose-500 to-pink-600",
-            border: "border-rose-100"
+            gradient: "from-primary to-primary",
+            bg: "bg-card",
+            iconBg: "bg-primary/10",
+            border: "border-border/40"
         },
         {
             label: "Search History",
             value: searchCount,
             icon: Search,
-            gradient: "from-teal-500 to-emerald-600",
-            bg: "bg-gradient-to-br from-teal-50 to-emerald-50",
-            iconBg: "bg-gradient-to-br from-teal-500 to-emerald-600",
-            border: "border-teal-100"
+            gradient: "from-primary to-primary",
+            bg: "bg-card",
+            iconBg: "bg-primary/10",
+            border: "border-border/40"
         },
         {
             label: "Recent Activity",
             value: activityCount,
             icon: TrendingUp,
-            gradient: "from-amber-500 to-orange-600",
-            bg: "bg-gradient-to-br from-amber-50 to-orange-50",
-            iconBg: "bg-gradient-to-br from-amber-500 to-orange-600",
-            border: "border-amber-100"
+            gradient: "from-primary to-primary",
+            bg: "bg-card",
+            iconBg: "bg-primary/10",
+            border: "border-border/40"
         },
     ]
 
@@ -370,7 +370,7 @@ export default function UserDashboardPage() {
     })
 
     return (
-        <div className="flex min-h-screen flex-col bg-slate-50/50">
+        <div className="flex min-h-screen flex-col bg-background">
             <SiteHeader />
 
             <main className="flex-1 pb-16">
@@ -386,26 +386,22 @@ export default function UserDashboardPage() {
                             priority
                         />
                         {/* Dark gradient overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/80 via-slate-900/70 to-slate-900/90" />
+                        <div className="absolute inset-0 bg-gradient-to-b from-[#1a2e2a]/85 via-[#1a2e2a]/75 to-[#1a2e2a]/90" />
                         {/* Animated subtle shimmer */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent dashboard-shimmer" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent dashboard-shimmer" />
                     </div>
 
                     {/* Hero Content */}
-                    <div className="relative mx-auto max-w-7xl px-4 py-12 lg:px-8 lg:py-16">
+                    <div className="relative mx-auto max-w-7xl px-6 py-14 lg:px-8 lg:py-20">
                         <div className={`transition-all duration-700 ease-out ${heroLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
                                 <div className="flex flex-col md:flex-row gap-6 items-center md:items-start flex-1">
-                                    {/* Avatar with glow */}
+                                    {/* Avatar */}
                                     <div className="relative group">
-                                        <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-emerald-400 to-teal-500 opacity-60 blur-md group-hover:opacity-80 transition-opacity duration-500" />
-                                        <Avatar className="relative h-28 w-28 border-[4px] border-white/20 shadow-2xl transition-transform duration-500 group-hover:scale-105">
+                                        <Avatar className="relative h-24 w-24 border-[3px] border-white/20 shadow-xl transition-transform duration-500 group-hover:scale-105">
                                             <AvatarImage src={`https://api.dicebear.com/7.x/initials/svg?seed=${user.name}&backgroundColor=0d9488,059669,0891b2&textColor=ffffff&fontSize=40`} />
-                                            <AvatarFallback className="bg-emerald-600 text-white text-3xl font-bold">{user.name.charAt(0)}</AvatarFallback>
+                                            <AvatarFallback className="bg-emerald-600 text-white text-2xl font-bold">{user.name.charAt(0)}</AvatarFallback>
                                         </Avatar>
-                                        <div className="absolute -bottom-1 -right-1 h-8 w-8 rounded-full bg-emerald-500 flex items-center justify-center border-2 border-white/20 shadow-lg">
-                                            <Sparkles className="h-4 w-4 text-white" />
-                                        </div>
                                     </div>
 
                                     {/* User Info */}
@@ -507,24 +503,22 @@ export default function UserDashboardPage() {
                     </div>
                 </div>
 
-                <div className="mx-auto max-w-7xl px-4 mt-8 lg:px-8">
+                <div className="mx-auto max-w-7xl px-6 mt-10 lg:px-8">
                     {/* ============ STATS GRID ============ */}
                     <div className={`grid gap-4 sm:grid-cols-3 mb-8 transition-all duration-700 delay-200 ${heroLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
                         {statCards.map((stat, idx) => (
                             <Card
                                 key={stat.label}
-                                className={`${stat.bg} ${stat.border} border shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group overflow-hidden relative`}
+                                className={`${stat.bg} ${stat.border} border hover:shadow-sm hover:-translate-y-0.5 transition-all duration-300 group overflow-hidden relative`}
                                 style={{ transitionDelay: `${idx * 80}ms` }}
                             >
-                                {/* Subtle gradient accent bar */}
-                                <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${stat.gradient} opacity-80`} />
                                 <CardContent className="p-6 flex items-center gap-4">
-                                    <div className={`h-14 w-14 rounded-2xl ${stat.iconBg} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                                        <stat.icon className="h-6 w-6 text-white" />
+                                    <div className={`h-12 w-12 rounded-xl ${stat.iconBg} flex items-center justify-center group-hover:scale-105 transition-transform duration-300`}>
+                                        <stat.icon className="h-5 w-5 text-primary" />
                                     </div>
                                     <div>
-                                        <p className="text-sm font-medium text-slate-500">{stat.label}</p>
-                                        <p className="text-3xl font-bold text-slate-900 tabular-nums">{stat.value}</p>
+                                        <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{stat.label}</p>
+                                        <p className="text-2xl font-bold text-foreground tabular-nums mt-0.5">{stat.value}</p>
                                     </div>
                                 </CardContent>
                             </Card>
@@ -536,11 +530,11 @@ export default function UserDashboardPage() {
                         {/* Left Col: Main Content */}
                         <div className="lg:col-span-2 space-y-8">
                             <Tabs defaultValue="overview" className="w-full" onValueChange={setActiveTab}>
-                                <TabsList className="bg-white/80 backdrop-blur-sm p-1.5 border border-slate-200 shadow-sm rounded-xl">
-                                    <TabsTrigger value="overview" className="data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-lg px-4">Overview</TabsTrigger>
-                                    <TabsTrigger value="my-properties" className="data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-lg px-4" onClick={fetchMyProperties}>My Properties</TabsTrigger>
-                                    <TabsTrigger value="my-leads" className="data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-lg px-4" onClick={fetchUserLeads}>My Leads</TabsTrigger>
-                                    <TabsTrigger value="saved" className="data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-lg px-4">Saved Properties</TabsTrigger>
+                                <TabsList className="bg-secondary/50 p-1.5 border border-border/40 rounded-lg">
+                                    <TabsTrigger value="overview" className="data-[state=active]:bg-card data-[state=active]:shadow-sm rounded-md px-4 text-sm">Overview</TabsTrigger>
+                                    <TabsTrigger value="my-properties" className="data-[state=active]:bg-card data-[state=active]:shadow-sm rounded-md px-4 text-sm" onClick={fetchMyProperties}>My Properties</TabsTrigger>
+                                    <TabsTrigger value="my-leads" className="data-[state=active]:bg-card data-[state=active]:shadow-sm rounded-md px-4 text-sm" onClick={fetchUserLeads}>My Leads</TabsTrigger>
+                                    <TabsTrigger value="saved" className="data-[state=active]:bg-card data-[state=active]:shadow-sm rounded-md px-4 text-sm">Saved Properties</TabsTrigger>
                                     <TabsTrigger value="history" className="data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-lg px-4">Search History</TabsTrigger>
                                 </TabsList>
 
