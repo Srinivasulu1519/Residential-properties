@@ -34,6 +34,7 @@ const jtiBlacklist = new Map<string, BlacklistEntry>()
 export function blacklistToken(jti: string, tokenExpiresAt: number): void {
     const expiresAtMs = tokenExpiresAt * 1000 // Convert to milliseconds
     jtiBlacklist.set(jti, { jti, expiresAt: expiresAtMs })
+    console.log(`[TokenBlacklist] Token blacklisted | JTI: ${jti} | Expires: ${new Date(expiresAtMs).toISOString()}`)
 }
 
 /**
@@ -42,7 +43,11 @@ export function blacklistToken(jti: string, tokenExpiresAt: number): void {
  * @returns true if the token is revoked
  */
 export function isTokenBlacklisted(jti: string): boolean {
-    return jtiBlacklist.has(jti)
+    const result = jtiBlacklist.has(jti)
+    if (result) {
+        console.log(`[TokenBlacklist] Blocked request | JTI: ${jti} is blacklisted`)
+    }
+    return result
 }
 
 // ─── User-Level Revocation (Password Change) ────────────────
@@ -57,6 +62,7 @@ const userRevocationMap = new Map<string, number>()
  */
 export function revokeAllUserTokens(userId: string): void {
     userRevocationMap.set(userId, Date.now())
+    console.log(`[TokenBlacklist] All tokens revoked | User: ${userId} | At: ${new Date().toISOString()}`)
 }
 
 /**
@@ -71,7 +77,11 @@ export function isUserTokenRevoked(userId: string, issuedAt: number): boolean {
     
     // Convert iat (seconds) to milliseconds for comparison
     const issuedAtMs = issuedAt * 1000
-    return issuedAtMs < revokedAt
+    const revoked = issuedAtMs < revokedAt
+    if (revoked) {
+        console.log(`[TokenBlacklist] User token revoked | User: ${userId} | Issued: ${new Date(issuedAtMs).toISOString()} | Revoked at: ${new Date(revokedAt).toISOString()}`)
+    }
+    return revoked
 }
 
 // ─── Cleanup (Garbage Collection) ───────────────────────────
@@ -82,9 +92,13 @@ export function isUserTokenRevoked(userId: string, issuedAt: number): boolean {
  */
 function cleanupExpiredEntries(): void {
     const now = Date.now()
+    let jtiRemoved = 0
+    let userRemoved = 0
+
     for (const [jti, entry] of jtiBlacklist.entries()) {
         if (entry.expiresAt <= now) {
             jtiBlacklist.delete(jti)
+            jtiRemoved++
         }
     }
     
@@ -94,7 +108,12 @@ function cleanupExpiredEntries(): void {
     for (const [userId, revokedAt] of userRevocationMap.entries()) {
         if (now - revokedAt > sevenDaysMs) {
             userRevocationMap.delete(userId)
+            userRemoved++
         }
+    }
+
+    if (jtiRemoved > 0 || userRemoved > 0) {
+        console.log(`[TokenBlacklist] Cleanup complete | JTIs removed: ${jtiRemoved} | User entries removed: ${userRemoved} | Remaining: ${jtiBlacklist.size} JTIs, ${userRevocationMap.size} users`)
     }
 }
 
