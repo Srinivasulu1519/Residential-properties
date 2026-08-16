@@ -10,11 +10,13 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { PaymentModal } from "@/components/payment-modal"
 import { useState } from "react"
+import { useSubscriptionEnforcement } from "@/hooks/use-subscription-enforcement"
 
 export default function PostPropertyPage() {
     const { isAuthenticated, user } = useAdminAuth()
     const { daysLeft, isExpired } = useTrialStatus()
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
+    const { isEnforced: subscriptionEnforced } = useSubscriptionEnforcement()
 
     if (!isAuthenticated || !user) {
         return (
@@ -48,7 +50,7 @@ export default function PostPropertyPage() {
                     <p className="text-white/50 max-w-lg mx-auto text-sm leading-relaxed">
                         List your property for free during your trial period. Reach thousands of potential buyers.
                     </p>
-                    {!isExpired && daysLeft <= 30 && (
+                    {!isExpired && daysLeft <= 30 && subscriptionEnforced && (
                         <div className="mt-5 inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2 text-sm text-white/60">
                             <Clock className="h-3.5 w-3.5" />
                             {daysLeft} day{daysLeft !== 1 ? "s" : ""} left in your free trial
@@ -59,7 +61,7 @@ export default function PostPropertyPage() {
 
             {/* Form Section */}
             <div className="mx-auto max-w-5xl px-6 py-12 lg:px-8 lg:py-16">
-                {isExpired && !user.subscriptionActive && user.role !== "admin" ? (
+                {isExpired && !user.subscriptionActive && user.role !== "admin" && subscriptionEnforced ? (
                     <Card className="border border-border/40 overflow-hidden">
                         <CardContent className="p-10 text-center space-y-6">
                             <div className="h-16 w-16 mx-auto rounded-2xl bg-primary/10 flex items-center justify-center">

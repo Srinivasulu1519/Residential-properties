@@ -59,6 +59,7 @@ interface FreeUser {
 }
 
 import { useAdminAuth } from "@/lib/admin-auth"
+import { AdminSubscriptionToggle } from "@/components/admin-subscription-toggle"
 
 export default function SubscribersPage() {
     const { authenticatedFetch } = useAdminAuth()
@@ -219,6 +220,9 @@ export default function SubscribersPage() {
                         </CardContent>
                     </Card>
                 </div>
+
+                {/* Subscription Enforcement Toggle */}
+                <AdminSubscriptionToggle />
 
                 {/* Subscription Pricing Settings */}
                 <Card className="mb-8 border-border">

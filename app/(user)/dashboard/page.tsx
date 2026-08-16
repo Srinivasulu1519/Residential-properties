@@ -49,6 +49,7 @@ import { PropertyCard } from "@/components/property-card"
 import { type Property as PropertyType } from "@/lib/data"
 import { useAdminAuth } from "@/lib/admin-auth"
 import { PaymentModal } from "@/components/payment-modal"
+import { useSubscriptionEnforcement } from "@/hooks/use-subscription-enforcement"
 import {
     AlertDialog,
     AlertDialogAction,
@@ -95,6 +96,7 @@ interface DashboardStats {
 export default function UserDashboardPage() {
     const { isAuthenticated, user, token, logout, refreshUser, authenticatedFetch } = useAdminAuth()
     const router = useRouter()
+    const { isEnforced: subscriptionEnforced } = useSubscriptionEnforcement()
     const [activeTab, setActiveTab] = useState("overview")
     const [savedProperties, setSavedProperties] = useState<PropertyType[]>([])
     const [isLoading, setIsLoading] = useState(true)
@@ -430,9 +432,11 @@ export default function UserDashboardPage() {
                                                         Premium Member
                                                     </Badge>
                                                 ) : (
-                                                    <Badge className="w-fit bg-amber-500/20 text-amber-300 border-amber-500/30 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest backdrop-blur-sm">
-                                                        Free Trial
-                                                    </Badge>
+                                                    subscriptionEnforced ? (
+                                                        <Badge className="w-fit bg-amber-500/20 text-amber-300 border-amber-500/30 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest backdrop-blur-sm">
+                                                            Free Trial
+                                                        </Badge>
+                                                    ) : null
                                                 )}
                                             </div>
                                             <p className="text-base text-white/60 max-w-xl leading-relaxed">
@@ -453,7 +457,7 @@ export default function UserDashboardPage() {
 
                                 {/* Action buttons */}
                                 <div className="flex gap-3 self-center md:self-start">
-                                    {user.role !== "admin" && !user.subscriptionActive && (
+                                    {user.role !== "admin" && !user.subscriptionActive && subscriptionEnforced && (
                                         <Button size="sm" onClick={handleUpgrade} disabled={isUpdating} className="bg-gradient-to-r from-amber-500 to-orange-600 text-white border-none hover:from-amber-600 hover:to-orange-700 shadow-lg">
                                             {isUpdating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4 mr-1.5" />}
                                             Upgrade to Premium

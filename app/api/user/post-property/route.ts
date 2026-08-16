@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getUserFromRequest } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { notifyMatchingUsers } from "@/lib/notifications"
+import { isSubscriptionEnforcementEnabled } from "@/lib/subscription-settings"
 
 export async function POST(request: NextRequest) {
     try {
@@ -20,14 +21,18 @@ export async function POST(request: NextRequest) {
         }
 
         if (decoded.role !== "admin" && !user.subscriptionActive && user.trialEndsAt && new Date() > user.trialEndsAt) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    message: "Your 30-day free trial has expired. Please subscribe to post properties.",
-                    trialExpired: true,
-                },
-                { status: 403 }
-            )
+            // Only block if subscription enforcement is enabled by admin
+            const enforcementEnabled = await isSubscriptionEnforcementEnabled()
+            if (enforcementEnabled) {
+                return NextResponse.json(
+                    {
+                        success: false,
+                        message: "Your 30-day free trial has expired. Please subscribe to post properties.",
+                        trialExpired: true,
+                    },
+                    { status: 403 }
+                )
+            }
         }
 
         const body = await request.json()

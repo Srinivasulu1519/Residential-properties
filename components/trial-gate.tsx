@@ -6,6 +6,7 @@ import { Shield, Clock, CreditCard } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { PaymentModal } from "@/components/payment-modal"
+import { useSubscriptionEnforcement } from "@/hooks/use-subscription-enforcement"
 
 export function useTrialStatus() {
     const { user, isAuthenticated } = useAdminAuth()
@@ -32,6 +33,7 @@ export function TrialGate({ children }: { children: React.ReactNode }) {
     const { token, refreshUser } = useAdminAuth()
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
     const [subscriptionPrice, setSubscriptionPrice] = useState(499)
+    const { isEnforced } = useSubscriptionEnforcement()
 
     useEffect(() => {
         fetch("/api/settings/subscription")
@@ -50,6 +52,11 @@ export function TrialGate({ children }: { children: React.ReactNode }) {
 
     const onPaymentSuccess = () => {
         refreshUser()
+    }
+
+    // If admin has disabled subscription enforcement, show content freely
+    if (!isEnforced) {
+        return <>{children}</>
     }
 
     if (!isExpired) {

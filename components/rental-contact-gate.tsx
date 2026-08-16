@@ -5,6 +5,7 @@ import { Phone, Mail, User, Eye, Lock, CreditCard, CheckCircle2 } from "lucide-r
 import { Button } from "@/components/ui/button"
 import { useAdminAuth } from "@/lib/admin-auth"
 import { PaymentModal } from "@/components/payment-modal"
+import { useSubscriptionEnforcement } from "@/hooks/use-subscription-enforcement"
 
 interface RentalContactGateProps {
     propertyId: string
@@ -26,6 +27,7 @@ export function RentalContactGate({ propertyId, hasOwnerContact }: RentalContact
     const [requiresSubscription, setRequiresSubscription] = useState(false)
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
     const [subscriptionPrice, setSubscriptionPrice] = useState(499)
+    const { isEnforced } = useSubscriptionEnforcement()
 
     useEffect(() => {
         fetch("/api/settings/subscription")
@@ -40,6 +42,7 @@ export function RentalContactGate({ propertyId, hasOwnerContact }: RentalContact
 
     if (!hasOwnerContact) return null
 
+    // If admin has disabled subscription enforcement, bypass the contact view limit
     const handleViewContact = async () => {
         if (!isAuthenticated || !token) {
             setError("Please login to view owner contact details")
@@ -78,8 +81,8 @@ export function RentalContactGate({ propertyId, hasOwnerContact }: RentalContact
         handleViewContact()
     }
 
-    // Show paywall
-    if (requiresSubscription) {
+    // Show paywall (only if enforcement is enabled)
+    if (requiresSubscription && isEnforced) {
         return (
             <div className="rounded-xl border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 p-6 text-center">
                 <div className="h-14 w-14 mx-auto rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center mb-4 shadow-lg">

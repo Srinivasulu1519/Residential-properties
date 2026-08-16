@@ -6,6 +6,7 @@ import {
 } from "@/lib/db"
 import { requireAuth, getUserFromRequest } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { isSubscriptionEnforcementEnabled } from "@/lib/subscription-settings"
 
 export async function GET(
     request: NextRequest,
@@ -44,20 +45,24 @@ export async function GET(
             const trialExpired = owner.trialEndsAt && new Date(owner.trialEndsAt) <= now
             
             if (trialExpired && !isPremium) {
-                // Trial expired and not premium — block access for others
-                // Allow if requester is Admin or the Owner themselves
-                const currentUser = getUserFromRequest(request)
-                const isOwner = currentUser && currentUser.userId === (property as any).postedById
-                const isAdmin = currentUser && currentUser.role === "admin"
-                
-                if (!isOwner && !isAdmin) {
-                    return NextResponse.json(
-                        { 
-                            error: "Property temporarily inactive", 
-                            message: "This property is currently inactive as the owner's trial has expired and there is no active premium subscription." 
-                        },
-                        { status: 403 }
-                    )
+                // Only enforce if subscription enforcement is enabled by admin
+                const enforcementEnabled = await isSubscriptionEnforcementEnabled()
+                if (enforcementEnabled) {
+                    // Trial expired and not premium — block access for others
+                    // Allow if requester is Admin or the Owner themselves
+                    const currentUser = getUserFromRequest(request)
+                    const isOwner = currentUser && currentUser.userId === (property as any).postedById
+                    const isAdmin = currentUser && currentUser.role === "admin"
+                    
+                    if (!isOwner && !isAdmin) {
+                        return NextResponse.json(
+                            { 
+                                error: "Property temporarily inactive", 
+                                message: "This property is currently inactive as the owner's trial has expired and there is no active premium subscription." 
+                            },
+                            { status: 403 }
+                        )
+                    }
                 }
             }
         }

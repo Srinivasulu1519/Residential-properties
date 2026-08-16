@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getAllProperties, createProperty } from "@/lib/db"
 import { requireAuth, getUserFromRequest } from "@/lib/auth"
 import { notifyMatchingUsers } from "@/lib/notifications"
+import { isSubscriptionEnforcementEnabled } from "@/lib/subscription-settings"
 
 export async function GET(request: NextRequest) {
     try {
@@ -158,6 +159,8 @@ export async function GET(request: NextRequest) {
         const isAdminRequester = currentUser?.role === "admin"
 
         const now = new Date()
+        const enforcementEnabled = await isSubscriptionEnforcementEnabled()
+
         properties = properties.filter((p: any) => {
             // Admin sees EVERYTHING
             if (isAdminRequester) return true
@@ -169,8 +172,8 @@ export async function GET(request: NextRequest) {
             if (p.expiresAt && new Date(p.expiresAt) <= now) return false
 
             // ── 2. Owner Trial/Subscription Expiry ──
-            // If the property has an owner who is NOT an admin
-            if (p.postedBy && p.postedBy.role !== "ADMIN") {
+            // Only enforce if subscription enforcement is enabled by admin
+            if (enforcementEnabled && p.postedBy && p.postedBy.role !== "ADMIN") {
                 const isPremium = p.postedBy.subscriptionActive === true
                 const trialExpired = p.postedBy.trialEndsAt && new Date(p.postedBy.trialEndsAt) <= now
 

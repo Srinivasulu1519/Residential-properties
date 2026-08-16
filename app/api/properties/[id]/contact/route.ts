@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getUserFromRequest } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { isSubscriptionEnforcementEnabled } from "@/lib/subscription-settings"
 
 /**
  * GET /api/properties/[id]/contact — get rental owner contact details
@@ -104,7 +105,10 @@ export async function GET(
         // Check if user has active subscription
         const hasAccess = user.subscriptionActive || user.contactViewsUsed < user.contactViewsLimit
 
-        if (!hasAccess) {
+        // If admin has disabled subscription enforcement, allow access regardless of limits
+        const enforcementEnabled = await isSubscriptionEnforcementEnabled()
+
+        if (!hasAccess && enforcementEnabled) {
             return NextResponse.json(
                 {
                     success: false,
