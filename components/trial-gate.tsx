@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useAdminAuth } from "@/lib/admin-auth"
 import { Shield, Clock, CreditCard } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -31,6 +31,18 @@ export function TrialGate({ children }: { children: React.ReactNode }) {
     const { isExpired, daysLeft } = useTrialStatus()
     const { token, refreshUser } = useAdminAuth()
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
+    const [subscriptionPrice, setSubscriptionPrice] = useState(499)
+
+    useEffect(() => {
+        fetch("/api/settings/subscription")
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.pricing) {
+                    setSubscriptionPrice(data.pricing.basePrice)
+                }
+            })
+            .catch(() => {})
+    }, [])
 
     const handleUpgrade = () => {
         setIsPaymentModalOpen(true)
@@ -94,7 +106,7 @@ export function TrialGate({ children }: { children: React.ReactNode }) {
                             onClick={handleUpgrade}
                             className="w-full h-12 rounded-full"
                         >
-                            Subscribe — ₹499/month
+                            Subscribe — ₹{subscriptionPrice}/month
                         </Button>
                         <Button variant="ghost" size="sm" className="text-muted-foreground" asChild>
                             <Link href="/">Back to Home</Link>

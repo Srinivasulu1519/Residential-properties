@@ -49,6 +49,16 @@ import { PropertyCard } from "@/components/property-card"
 import { type Property as PropertyType } from "@/lib/data"
 import { useAdminAuth } from "@/lib/admin-auth"
 import { PaymentModal } from "@/components/payment-modal"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 // Animated counter hook
 function useAnimatedCounter(target: number, duration: number = 1200) {
@@ -100,6 +110,7 @@ export default function UserDashboardPage() {
     const [isLeadsModalOpen, setIsLeadsModalOpen] = useState(false)
     const [activePropertyTitle, setActivePropertyTitle] = useState("")
     const [isDeleting, setIsDeleting] = useState<string | null>(null)
+    const [deletePropertyId, setDeletePropertyId] = useState<string | null>(null)
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
     const [userLeads, setUserLeads] = useState<any[]>([])
     const [isUserLeadsLoading, setIsUserLeadsLoading] = useState(false)
@@ -248,8 +259,6 @@ export default function UserDashboardPage() {
     }
 
     const handleDeleteProperty = async (propertyId: string) => {
-        if (!confirm("Are you sure you want to delete this property? This action cannot be undone.")) return
-        
         setIsDeleting(propertyId)
         try {
             const res = await authenticatedFetch("/api/user/my-properties", {
@@ -268,6 +277,7 @@ export default function UserDashboardPage() {
             toast.error("An error occurred while deleting")
         } finally {
             setIsDeleting(null)
+            setDeletePropertyId(null)
         }
     }
 
@@ -666,7 +676,7 @@ export default function UserDashboardPage() {
                                                                     <Button 
                                                                         variant="destructive" 
                                                                         size="sm" 
-                                                                        onClick={() => handleDeleteProperty(p.id)}
+                                                                        onClick={() => setDeletePropertyId(p.id)}
                                                                         disabled={isDeleting === p.id}
                                                                     >
                                                                         {isDeleting === p.id ? <Loader2 className="h-4 w-4 animate-spin mr-1.5" /> : null}
@@ -1084,6 +1094,27 @@ export default function UserDashboardPage() {
                 onClose={() => setIsPaymentModalOpen(false)}
                 onSuccess={onPaymentSuccess}
             />
+
+            {/* Delete Property Confirmation */}
+            <AlertDialog open={!!deletePropertyId} onOpenChange={(open) => { if (!open) setDeletePropertyId(null) }}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Property</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Are you sure you want to delete this property? This action cannot be undone.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={() => deletePropertyId && handleDeleteProperty(deletePropertyId)}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                            Delete
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     )
 }

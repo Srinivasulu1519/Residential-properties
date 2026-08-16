@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Phone, Mail, User, Eye, Lock, CreditCard, CheckCircle2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAdminAuth } from "@/lib/admin-auth"
@@ -25,6 +25,18 @@ export function RentalContactGate({ propertyId, hasOwnerContact }: RentalContact
     const [viewsInfo, setViewsInfo] = useState<{ used: number; limit: number } | null>(null)
     const [requiresSubscription, setRequiresSubscription] = useState(false)
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
+    const [subscriptionPrice, setSubscriptionPrice] = useState(499)
+
+    useEffect(() => {
+        fetch("/api/settings/subscription")
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.pricing) {
+                    setSubscriptionPrice(data.pricing.basePrice)
+                }
+            })
+            .catch(() => {})
+    }, [])
 
     if (!hasOwnerContact) return null
 
@@ -88,7 +100,7 @@ export function RentalContactGate({ propertyId, hasOwnerContact }: RentalContact
                     className="w-full gap-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white shadow-md"
                 >
                     <CreditCard className="h-4 w-4" />
-                    Subscribe — ₹499/month
+                    Subscribe — ₹{subscriptionPrice}/month
                 </Button>
             </div>
         )

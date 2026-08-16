@@ -11,6 +11,16 @@ import { PropVistaLogo } from "@/components/propvista-logo"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { useAdminAuth } from "@/lib/admin-auth"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 const PROPERTY_TYPES = [
   { value: "plot", label: "Plots", icon: LandPlot, color: "text-emerald-700", bg: "bg-emerald-50", border: "border-emerald-200/60" },
@@ -30,25 +40,28 @@ export function SiteHeader() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [megaOpen, setMegaOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
   const megaRef = useRef<HTMLDivElement>(null)
   const megaTimeout = useRef<NodeJS.Timeout | null>(null)
   const { isAuthenticated, user, logout } = useAdminAuth()
+  const welcomeShown = useRef(false)
 
-  useState(() => {
-    if (typeof window !== "undefined") {
+  useEffect(() => {
+    if (typeof window !== "undefined" && !welcomeShown.current) {
       const showWelcome = sessionStorage.getItem("show_welcome")
       if (showWelcome === "true" && user?.name) {
+        welcomeShown.current = true
+        sessionStorage.removeItem("show_welcome")
         setTimeout(() => {
           import("sonner").then(({ toast }) => {
             toast.success(`Welcome back, ${user.name.split(' ')[0]}!`, {
-              description: "Great to see you again.",
+              description: "You have successfully logged in.",
             })
           })
-          sessionStorage.removeItem("show_welcome")
         }, 500)
       }
     }
-  })
+  }, [user])
 
   // Scroll detection for header styling
   useEffect(() => {
@@ -70,8 +83,16 @@ export function SiteHeader() {
   }, [])
 
   const handleLogout = () => {
+    const wasAdmin = user?.role === "admin"
     logout()
     setMobileOpen(false)
+    if (wasAdmin) {
+      import("sonner").then(({ toast }) => {
+        toast.success("Logged out successfully", {
+          description: "You have been logged out from admin panel and website."
+        })
+      })
+    }
     router.push("/")
   }
 
@@ -212,7 +233,7 @@ export function SiteHeader() {
                   </Link>
                 </Button>
               )}
-              <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground h-9 w-9" onClick={handleLogout}>
+              <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground h-9 w-9" onClick={() => setShowLogoutConfirm(true)}>
                 <LogOut className="h-4 w-4" />
               </Button>
             </>
@@ -316,7 +337,7 @@ export function SiteHeader() {
                       </Link>
                     </Button>
                   )}
-                  <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground" onClick={handleLogout}>
+                  <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground" onClick={() => setShowLogoutConfirm(true)}>
                     <LogOut className="h-4 w-4" />
                     Logout
                   </Button>
@@ -339,6 +360,26 @@ export function SiteHeader() {
           </nav>
         </div>
       )}
+
+      <AlertDialog open={showLogoutConfirm} onOpenChange={setShowLogoutConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm Logout</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to logout? {user?.role === "admin" ? "You will be logged out from both the admin panel and the website." : "You will be logged out from your account."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleLogout}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Logout
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </header>
   )
 }

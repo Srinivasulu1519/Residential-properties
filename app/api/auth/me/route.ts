@@ -11,7 +11,13 @@ export async function GET(request: NextRequest) {
             // STRICT: only return the user from the requested role's cookie.
             // Do NOT fall back to the other role — this prevents admin session
             // from leaking into user tabs and vice versa.
+            // Exception: admin users are allowed on user-facing pages (admin is a superset of user)
             user = getUserByRole(request, roleHint)
+
+            if (!user && roleHint === "user") {
+                // Allow admin to be recognized on user-facing pages
+                user = getUserByRole(request, "admin")
+            }
 
             if (!user) {
                 return NextResponse.json(

@@ -23,6 +23,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { useAdminAuth } from "@/lib/admin-auth"
 import { toast } from "sonner"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 interface UserItem {
     id: string
@@ -48,6 +58,7 @@ export default function AdminUsersPage() {
     const [showPassword, setShowPassword] = useState(false)
     const [formLoading, setFormLoading] = useState(false)
     const [formError, setFormError] = useState("")
+    const [deleteUserId, setDeleteUserId] = useState<string | null>(null)
 
     useEffect(() => {
         if (!isAuthenticated || user?.role !== "admin") {
@@ -113,7 +124,6 @@ export default function AdminUsersPage() {
     }
 
     const handleDeleteUser = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this user?")) return
         try {
             const res = await authenticatedFetch(`/api/admin/users/${id}`, {
                 method: "DELETE"
@@ -127,6 +137,8 @@ export default function AdminUsersPage() {
             }
         } catch {
             toast.error("Failed to delete user.")
+        } finally {
+            setDeleteUserId(null)
         }
     }
 
@@ -380,7 +392,7 @@ export default function AdminUsersPage() {
                                                                 size="icon" 
                                                                 className="h-9 w-9 text-muted-foreground hover:text-destructive hover:bg-red-50"
                                                                 title="Delete Admin"
-                                                                onClick={() => handleDeleteUser(u.id)}
+                                                                onClick={() => setDeleteUserId(u.id)}
                                                             >
                                                                 <Trash2 className="h-4 w-4" />
                                                             </Button>
@@ -463,6 +475,27 @@ export default function AdminUsersPage() {
                     </Card>
                 )}
             </div>
+
+            {/* Delete User Confirmation */}
+            <AlertDialog open={!!deleteUserId} onOpenChange={(open) => { if (!open) setDeleteUserId(null) }}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Delete User</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Are you sure you want to delete this user? This action cannot be undone.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={() => deleteUserId && handleDeleteUser(deleteUserId)}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                            Delete
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     )
 }

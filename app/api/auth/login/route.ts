@@ -73,6 +73,25 @@ export async function POST(request: NextRequest) {
             path: "/",
         })
 
+        // Admin gets both cookies so the user-facing site also recognizes them
+        if (role === "admin") {
+            const userCookieNames = getCookieNamesForRole("user")
+            cookieStore.set(userCookieNames.token, token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "strict",
+                maxAge: 60 * 60 * 24,
+                path: "/",
+            })
+            cookieStore.set(userCookieNames.refresh, refreshToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "strict",
+                maxAge: 60 * 60 * 24 * 7,
+                path: "/",
+            })
+        }
+
         // Clear legacy single auth-token cookies to prevent session conflicts
         cookieStore.set("auth-token", "", { maxAge: 0, path: "/" })
         cookieStore.set("refresh-token", "", { maxAge: 0, path: "/" })

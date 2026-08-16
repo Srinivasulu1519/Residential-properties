@@ -106,6 +106,11 @@ export async function createUser(
             }
         },
         include: { activities: true, savedProperties: true }
+    }).catch((err: any) => {
+        if (err?.code === "P2002" && err?.meta?.target?.includes("email")) {
+            throw new Error("An account with this email already exists")
+        }
+        throw err
     })
 
     return toSafeUser(newUser)

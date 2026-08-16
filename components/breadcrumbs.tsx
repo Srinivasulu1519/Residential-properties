@@ -4,10 +4,17 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { ChevronRight, Home } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useProperties } from "@/lib/property-context"
+
+// Check if a segment looks like a UUID
+function isUuid(segment: string) {
+    return /^[0-9a-f]{8}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{12}$/i.test(segment.replace(/\s/g, ""))
+}
 
 export function Breadcrumbs() {
     const pathname = usePathname()
     const pathSegments = pathname.split("/").filter((segment) => segment !== "")
+    const { getProperty } = useProperties()
 
     // Don't show breadcrumbs on the dashboard itself or login
     if (pathname === "/admin" || pathname === "/admin/dashboard") {
@@ -34,10 +41,17 @@ export function Breadcrumbs() {
                     const href = `/${pathSegments.slice(0, index + 1).join("/")}`
                     const isLast = index === pathSegments.length - 1
 
-                    // Format segment name (e.g., 'new' -> 'New', 'property-list' -> 'Property List')
-                    const label = segment
-                        .replace(/-/g, " ")
-                        .replace(/\b\w/g, (l) => l.toUpperCase())
+                    // If segment is a UUID, try to resolve property title
+                    let label: string
+                    if (isUuid(segment)) {
+                        const property = getProperty(segment)
+                        label = property?.title || "Property"
+                    } else {
+                        // Format segment name (e.g., 'new' -> 'New', 'property-list' -> 'Property List')
+                        label = segment
+                            .replace(/-/g, " ")
+                            .replace(/\b\w/g, (l) => l.toUpperCase())
+                    }
 
                     return (
                         <li key={href} className="flex items-center gap-2">

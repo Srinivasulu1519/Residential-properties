@@ -11,7 +11,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label"
 import { PropVistaLogo } from "@/components/propvista-logo"
 import { useAdminAuth } from "@/lib/admin-auth"
-import { toast } from "sonner"
 
 export default function UserLoginPage() {
     const [email, setEmail] = useState("")
@@ -44,9 +43,6 @@ export default function UserLoginPage() {
         try {
             const result = await login(email, password)
             if (result.success) {
-                toast.success("Welcome back!", {
-                    description: "You have successfully logged in."
-                })
                 // Set flag for welcome message on home page
                 sessionStorage.setItem("show_welcome", "true")
                 router.push("/")

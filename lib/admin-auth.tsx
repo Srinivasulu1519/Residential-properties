@@ -83,14 +83,20 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
       const storedToken = sessionStorage.getItem(TOKEN_KEY)
       if (storedUser && storedToken) {
         const parsed = JSON.parse(storedUser)
-        if (parsed.role === roleHint) {
+        // Allow admin users to be recognized on user-facing pages too
+        if (parsed.role === roleHint || parsed.role === "admin") {
           setUser(parsed)
           setIsAuthenticated(true)
           setToken(storedToken)
         }
       }
 
-      refreshUser(roleHint)
+      // Admin users on user pages: use "admin" roleHint so /api/auth/me returns their session
+      const effectiveRoleHint = (roleHint === "user" && storedUser) 
+        ? (JSON.parse(storedUser).role === "admin" ? "admin" : "user")
+        : roleHint
+
+      refreshUser(effectiveRoleHint)
     }
   }, [refreshUser, pathname])
 

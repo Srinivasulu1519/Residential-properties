@@ -44,20 +44,9 @@ export default function HomePage() {
   const { properties, loading } = useProperties()
   const { isAuthenticated, user } = useAdminAuth()
   const [searchQuery, setSearchQuery] = useState("")
-  const [showWelcome, setShowWelcome] = useState(false)
   const [suggestions, setSuggestions] = useState<{ label: string; value: string; type: 'type' | 'location' }[]>([])
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [activeIndex, setActiveIndex] = useState(-1)
-
-  useEffect(() => {
-    const welcome = sessionStorage.getItem("show_welcome")
-    if (welcome === "true") {
-      setShowWelcome(true)
-      sessionStorage.removeItem("show_welcome")
-      const timer = setTimeout(() => setShowWelcome(false), 5000)
-      return () => clearTimeout(timer)
-    }
-  }, [])
 
   useEffect(() => {
     if (!searchQuery.trim()) {

@@ -28,8 +28,11 @@ export async function POST(request: NextRequest) {
         }
 
         if (roleToLogout === "admin") {
+            // Admin has both admin and user cookies set, clear both
             cookieStore.set(ADMIN_TOKEN_COOKIE, "", { maxAge: 0, path: "/" })
             cookieStore.set(ADMIN_REFRESH_COOKIE, "", { maxAge: 0, path: "/" })
+            cookieStore.set(USER_TOKEN_COOKIE, "", { maxAge: 0, path: "/" })
+            cookieStore.set(USER_REFRESH_COOKIE, "", { maxAge: 0, path: "/" })
         } else if (roleToLogout === "user") {
             cookieStore.set(USER_TOKEN_COOKIE, "", { maxAge: 0, path: "/" })
             cookieStore.set(USER_REFRESH_COOKIE, "", { maxAge: 0, path: "/" })

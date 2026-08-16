@@ -13,9 +13,15 @@ import {
     CalendarDays,
     CheckCircle2,
     XCircle,
+    Settings,
+    IndianRupee,
+    Save,
 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
     Table,
     TableBody,
@@ -25,6 +31,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { toast } from "sonner"
 
 interface Subscriber {
     id: string
@@ -60,9 +67,67 @@ export default function SubscribersPage() {
     const [stats, setStats] = useState({ totalPremium: 0, totalFree: 0, totalExpired: 0 })
     const [isLoading, setIsLoading] = useState(true)
 
+    // Pricing settings state
+    const [basePrice, setBasePrice] = useState("")
+    const [gstPercentage, setGstPercentage] = useState("")
+    const [pricingPreview, setPricingPreview] = useState({ gstAmount: 0, totalPrice: 0 })
+    const [isSavingPrice, setIsSavingPrice] = useState(false)
+
     useEffect(() => {
         fetchSubscribers()
+        fetchPricing()
     }, [])
+
+    // Recompute preview when inputs change
+    useEffect(() => {
+        const base = parseFloat(basePrice) || 0
+        const gst = parseFloat(gstPercentage) || 0
+        const gstAmt = parseFloat(((base * gst) / 100).toFixed(2))
+        const total = parseFloat((base + gstAmt).toFixed(2))
+        setPricingPreview({ gstAmount: gstAmt, totalPrice: total })
+    }, [basePrice, gstPercentage])
+
+    const fetchPricing = async () => {
+        try {
+            const res = await authenticatedFetch("/api/admin/settings")
+            const data = await res.json()
+            if (data.success && data.pricing) {
+                setBasePrice(data.pricing.basePrice.toString())
+                setGstPercentage(data.pricing.gstPercentage.toString())
+            }
+        } catch {}
+    }
+
+    const handleSavePricing = async () => {
+        const price = parseFloat(basePrice)
+        const gst = parseFloat(gstPercentage)
+        if (isNaN(price) || price <= 0 || price > 99999) {
+            toast.error("Price must be between ₹1 and ₹99,999")
+            return
+        }
+        if (isNaN(gst) || gst < 0 || gst > 100) {
+            toast.error("GST must be between 0% and 100%")
+            return
+        }
+        setIsSavingPrice(true)
+        try {
+            const res = await authenticatedFetch("/api/admin/settings", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ basePrice: price, gstPercentage: gst }),
+            })
+            const data = await res.json()
+            if (data.success) {
+                toast.success("Subscription pricing updated successfully")
+            } else {
+                toast.error(data.message || "Failed to update pricing")
+            }
+        } catch {
+            toast.error("Failed to update pricing")
+        } finally {
+            setIsSavingPrice(false)
+        }
+    }
 
     const fetchSubscribers = async () => {
         try {
@@ -154,6 +219,80 @@ export default function SubscribersPage() {
                         </CardContent>
                     </Card>
                 </div>
+
+                {/* Subscription Pricing Settings */}
+                <Card className="mb-8 border-border">
+                    <CardHeader className="pb-4">
+                        <CardTitle className="text-lg font-serif flex items-center gap-2">
+                            <Settings className="h-5 w-5 text-primary" />
+                            Subscription Pricing
+                        </CardTitle>
+                        <p className="text-sm text-muted-foreground">
+                            Set the subscription amount that users will be charged. Changes apply immediately to new payments.
+                        </p>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 items-end">
+                            <div className="space-y-2">
+                                <Label htmlFor="base-price" className="text-sm font-medium">
+                                    Base Price (₹/month)
+                                </Label>
+                                <div className="relative">
+                                    <IndianRupee className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                    <Input
+                                        id="base-price"
+                                        type="number"
+                                        min="1"
+                                        max="99999"
+                                        step="1"
+                                        value={basePrice}
+                                        onChange={(e) => setBasePrice(e.target.value)}
+                                        className="pl-9"
+                                        placeholder="499"
+                                    />
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="gst-percentage" className="text-sm font-medium">
+                                    GST (%)
+                                </Label>
+                                <Input
+                                    id="gst-percentage"
+                                    type="number"
+                                    min="0"
+                                    max="100"
+                                    step="0.1"
+                                    value={gstPercentage}
+                                    onChange={(e) => setGstPercentage(e.target.value)}
+                                    placeholder="18"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-sm font-medium text-muted-foreground">
+                                    Total (incl. GST)
+                                </Label>
+                                <div className="h-9 flex items-center px-3 rounded-md border border-border bg-muted/50 text-sm font-semibold">
+                                    ₹{pricingPreview.totalPrice.toFixed(2)}
+                                    <span className="ml-1.5 text-xs font-normal text-muted-foreground">
+                                        (GST: ₹{pricingPreview.gstAmount.toFixed(2)})
+                                    </span>
+                                </div>
+                            </div>
+                            <Button
+                                onClick={handleSavePricing}
+                                disabled={isSavingPrice}
+                                className="gap-2"
+                            >
+                                {isSavingPrice ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : (
+                                    <Save className="h-4 w-4" />
+                                )}
+                                Save Price
+                            </Button>
+                        </div>
+                    </CardContent>
+                </Card>
 
                 {/* Tabs */}
                 <Tabs defaultValue="premium">

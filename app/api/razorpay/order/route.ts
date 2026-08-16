@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getUserFromRequest } from "@/lib/auth"
+import { getSubscriptionPricing } from "@/lib/settings"
 
 export async function POST(request: NextRequest) {
     try {
@@ -15,8 +16,9 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ success: false, message: "Razorpay keys not configured" }, { status: 500 })
         }
 
-        // Amount is ₹588.82 (₹499 + 18% GST). Razorpay expects amount in paise (1 INR = 100 paise)
-        const amount = 58882 
+        // Fetch dynamic pricing from DB (admin-managed)
+        const pricing = await getSubscriptionPricing()
+        const amount = pricing.totalPaise // Total including GST, in paise for Razorpay
         const currency = "INR"
         const receipt = `receipt_${Date.now()}`
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { 
     X, 
     CreditCard, 
@@ -43,6 +43,20 @@ export function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModalProps) 
     const [step, setStep] = useState<"method" | "details" | "processing">("method")
     const [method, setMethod] = useState<PaymentMethod>("card")
     const [loading, setLoading] = useState(false)
+    const [pricing, setPricing] = useState({ basePrice: 499, gstPercentage: 18, gstAmount: 89.82, totalPrice: 588.82 })
+
+    useEffect(() => {
+        if (isOpen) {
+            fetch("/api/settings/subscription")
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success && data.pricing) {
+                        setPricing(data.pricing)
+                    }
+                })
+                .catch(() => {})
+        }
+    }, [isOpen])
 
     const handleProcessPayment = async () => {
         setLoading(true)
@@ -146,29 +160,29 @@ export function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModalProps) 
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => { if (!open) { onClose(); reset(); } }}>
-            <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden border-border/40 shadow-xl">
-                <div className="bg-[#1a2e2a] p-8 text-white relative overflow-hidden">
+            <DialogContent className="sm:max-w-[500px] max-h-[90vh] p-0 overflow-hidden border-border/40 shadow-xl flex flex-col">
+                <div className="bg-[#1a2e2a] px-6 py-5 text-white relative shrink-0">
                     <button 
                         onClick={onClose}
-                        className="absolute right-4 top-4 p-2 rounded-full hover:bg-white/10 transition-colors"
+                        className="absolute right-3 top-3 p-2 rounded-full hover:bg-white/10 transition-colors"
                     >
                         <X className="h-4 w-4" />
                     </button>
 
-                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-white/40 mb-4">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-white/40 mb-2">
                         Premium Plan
                     </p>
-                    <DialogTitle className="text-2xl font-serif font-bold mb-2">Complete Payment</DialogTitle>
-                    <DialogDescription className="text-white/60 text-base leading-relaxed">
-                        Unlock unlimited property postings and contact views for just <span className="text-white font-bold">₹499/month</span>.
+                    <DialogTitle className="text-xl font-serif font-bold mb-1">Complete Payment</DialogTitle>
+                    <DialogDescription className="text-white/60 text-sm leading-relaxed">
+                        Unlock unlimited property postings and contact views for just <span className="text-white font-bold">₹{pricing.basePrice}/month</span>.
                     </DialogDescription>
                 </div>
 
-                <div className="p-8 bg-white">
+                <div className="p-6 bg-white overflow-y-auto flex-1">
                     {step === "method" && (
-                        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
                             <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Select Payment Method</Label>
-                            <div className="grid gap-3">
+                            <div className="grid gap-2.5">
                                 <button
                                     onClick={() => setMethod("card")}
                                     className={cn(
@@ -240,7 +254,7 @@ export function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModalProps) 
                     )}
 
                     {step === "details" && (
-                        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
                             <div className="flex items-center gap-2 mb-2">
                                 <Button variant="ghost" size="sm" onClick={() => setStep("method")} className="h-8 w-8 p-0 rounded-full">
                                     <X className="h-4 w-4 rotate-45" />
@@ -296,16 +310,16 @@ export function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModalProps) 
                             <div className="bg-slate-50 rounded-xl p-4 space-y-2">
                                 <div className="flex justify-between text-sm">
                                     <span className="text-slate-500">Premium Subscription</span>
-                                    <span className="font-medium">₹499.00</span>
+                                    <span className="font-medium">₹{pricing.basePrice.toFixed(2)}</span>
                                 </div>
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-slate-500">GST (18%)</span>
-                                    <span className="font-medium">₹89.82</span>
+                                    <span className="text-slate-500">GST ({pricing.gstPercentage}%)</span>
+                                    <span className="font-medium">₹{pricing.gstAmount.toFixed(2)}</span>
                                 </div>
                                 <Separator className="my-2 bg-slate-200" />
                                 <div className="flex justify-between font-bold text-lg text-slate-900">
                                     <span>Total Payable</span>
-                                    <span>₹588.82</span>
+                                    <span>₹{pricing.totalPrice.toFixed(2)}</span>
                                 </div>
                             </div>
 
@@ -322,7 +336,7 @@ export function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModalProps) 
                                 ) : (
                                     <>
                                         <ShieldCheck className="mr-2 h-4 w-4" />
-                                        Pay ₹588.82 Now
+                                        Pay ₹{pricing.totalPrice.toFixed(2)} Now
                                     </>
                                 )}
                             </Button>
@@ -330,21 +344,21 @@ export function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModalProps) 
                     )}
 
                     {step === "processing" && (
-                        <div className="py-20 flex flex-col items-center justify-center text-center animate-in zoom-in-95 duration-500">
-                            <div className="relative mb-6">
-                                <div className="h-24 w-24 rounded-full border-4 border-emerald-100 animate-pulse" />
+                        <div className="py-12 flex flex-col items-center justify-center text-center animate-in zoom-in-95 duration-500">
+                            <div className="relative mb-4">
+                                <div className="h-16 w-16 rounded-full border-4 border-emerald-100 animate-pulse" />
                                 <div className="absolute inset-0 flex items-center justify-center">
-                                    <Loader2 className="h-10 w-10 text-emerald-600 animate-spin" />
+                                    <Loader2 className="h-8 w-8 text-emerald-600 animate-spin" />
                                 </div>
                             </div>
-                            <h3 className="text-xl font-serif font-bold text-slate-900 mb-2">Processing Payment</h3>
+                            <h3 className="text-lg font-serif font-bold text-slate-900 mb-1">Processing Payment</h3>
                             <p className="text-slate-500 max-w-xs mx-auto text-sm leading-relaxed">
-                                Please do not close this window or refresh the page. We are securely connecting with your bank...
+                                Please do not close this window. Connecting with your bank...
                             </p>
                         </div>
                     )}
 
-                    <div className="mt-8 flex items-center justify-center gap-2 text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                    <div className="mt-6 flex items-center justify-center gap-2 text-[10px] text-slate-400 font-bold uppercase tracking-widest">
                         <Lock className="h-3 w-3" />
                         256-Bit SSL Secure Encryption
                     </div>
