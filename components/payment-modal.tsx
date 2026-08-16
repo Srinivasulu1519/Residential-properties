@@ -160,7 +160,7 @@ export function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModalProps) 
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => { if (!open) { onClose(); reset(); } }}>
-            <DialogContent className="sm:max-w-[500px] max-h-[90vh] p-0 overflow-hidden border-border/40 shadow-xl flex flex-col">
+            <DialogContent showCloseButton={false} className="sm:max-w-[500px] max-h-[90vh] p-0 overflow-hidden border-border/40 shadow-xl flex flex-col">
                 <div className="bg-[#1a2e2a] px-6 py-5 text-white relative shrink-0">
                     <button 
                         onClick={onClose}
